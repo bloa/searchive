@@ -1,18 +1,20 @@
 <template>
   <div>
     <h1>🏠 Accueil</h1>
-    <p>Bienvenue sur mon application Vue !</p>
-    <button @click="goToAbout">Aller à propos</button>
+
+    {{ counter }}
+    <button @click="increment">inc</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useLocalStorage } from "../store/localStorage";
+import { ref, type Ref } from "vue";
 
-const router = useRouter();
-
-function goToAbout() {
-  router.push("/about");
-  // ou router.push({ name: 'about' })
-}
+const counter: Ref<number> = ref(0);
+const increment = () => {
+  const newVal = counter.value + 1;
+  useLocalStorage().setItem("counter", JSON.stringify(newVal));
+  counter.value = JSON.parse(useLocalStorage().getItem("counter"));
+};
 </script>
