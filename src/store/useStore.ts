@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-export const useStore = defineStore("counter", () => {
+export const useStore = defineStore("myStore", () => {
   // State (réactif)
   const count = ref<number>(0);
   const message = ref<string>("Hello Pinia!");
