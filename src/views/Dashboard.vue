@@ -8,13 +8,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useLocalStorage } from "../store/localStorage";
-import { ref, type Ref } from "vue";
 
-const counter: Ref<number> = ref(0);
-const increment = () => {
-  const newVal = counter.value + 1;
-  useLocalStorage().setItem("counter", JSON.stringify(newVal));
-  counter.value = JSON.parse(useLocalStorage().getItem("counter"));
-};
+const storage = useLocalStorage();
+const saved = storage.getItem<number>("counter");
+const counter = ref<number>(saved !== null ? saved : 0);
+function increment() {
+  counter.value++;
+  storage.setItem("counter", counter.value);
+}
 </script>
