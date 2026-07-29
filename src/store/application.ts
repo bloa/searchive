@@ -5,9 +5,16 @@ import { generateId } from "../utils/generatingIDs";
 import { useLocalStorage } from "./localStorage";
 
 export const useApplicationStore = defineStore("applicationStore", () => {
+  const storageKey = "applications";
+  const save = () => {
+    useLocalStorage().setItem(storageKey, applications);
+  };
   // State (réactif)
   const count = ref<number>(0);
   const message = ref<string>("Hello Pinia!");
+  const applications: Ref<Application[]> = ref(
+    useLocalStorage().getItem(storageKey) as Application[] | [],
+  );
   const application: Ref<Application> = ref({
     title: "",
     companyID: "",
@@ -43,14 +50,8 @@ export const useApplicationStore = defineStore("applicationStore", () => {
   function create(app: Application): Application {
     const id = generateId();
     app._id = id;
-    const applications: Application[] | null =
-      useLocalStorage().getItem("applications");
-    if (applications != null) {
-      applications.push(app);
-      useLocalStorage().setItem("applications", applications);
-    } else {
-      useLocalStorage().setItem("applications", [app]);
-    }
+    applications.value.push(app);
+    save();
     return app;
   }
 
