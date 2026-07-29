@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref, reactive } from "vue";
 import { useLocalStorage } from "./localStorage";
 import type { Company } from "../interfaces/Company";
+import { generateId } from "../utils/generatingIDs";
 
 export const useCompanyStore = defineStore("companyStore", () => {
   const storage = useLocalStorage();
@@ -25,7 +26,7 @@ export const useCompanyStore = defineStore("companyStore", () => {
   function createCompany(data: Company): Company | null {
     const newCompany: Company = {
       ...data,
-      _id: crypto.randomUUID?.() ?? Date.now().toString(),
+      _id: generateId(),
     };
     companies.value.push(newCompany);
     save();
