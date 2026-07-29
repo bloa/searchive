@@ -707,7 +707,7 @@ import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import { useCompanyStore } from "../store/company";
 import { useRouter } from "vue-router";
-import Notification from "../components/notification.vue";
+import Notification from "../components/Notification.vue";
 // Stores
 const applicationStore = useApplicationStore();
 const companyStore = useCompanyStore();
