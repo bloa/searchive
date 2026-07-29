@@ -15,8 +15,8 @@ export const useCompanyStore = defineStore("companyStore", () => {
   const company = reactive<Company>({
     name: "",
     webSite: "",
-    type: "",
     sector: "",
+    size: "1-10",
   });
 
   function save() {
@@ -36,7 +36,6 @@ export const useCompanyStore = defineStore("companyStore", () => {
   function resetCompanyForm() {
     company.name = "";
     company.webSite = "";
-    company.type = "";
     company.sector = "";
   }
 

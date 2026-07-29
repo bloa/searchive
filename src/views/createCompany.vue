@@ -138,10 +138,10 @@
 
           <!-- Type et Secteur - 2 colonnes -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Type -->
+            <!-- Taille -->
             <div>
               <label
-                for="type"
+                for="size"
                 class="block text-sm font-medium text-gray-700 mb-1"
               >
                 <span class="flex items-center">
@@ -158,25 +158,24 @@
                       d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                     />
                   </svg>
-                  Type *
+                  Taille *
                 </span>
               </label>
               <select
-                id="type"
-                v-model="company.type"
+                id="size"
+                v-model="company.size"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none bg-white cursor-pointer"
               >
                 <option value="">Sélectionner</option>
                 <option
-                  v-for="companyType in COMPANY_TYPES"
-                  :key="companyType.value"
-                  :value="companyType.value"
+                  v-for="size in COMPANY_SIZES"
+                  :key="size.value"
+                  :value="size.value"
                 >
-                  {{ companyType.label }}
+                  {{ size.label }}
                 </option>
               </select>
             </div>
-
             <!-- Secteur -->
             <div>
               <label
@@ -322,7 +321,7 @@ import { reactive, ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useCompanyStore } from "../store/company";
 import { COMPANY_SECTORS } from "../data/companySectores";
-import { COMPANY_TYPES } from "../data/companyTypes";
+import { COMPANY_SIZES } from "../data/companySizes";
 import type { Company } from "../interfaces/Company";
 
 const router = useRouter();
@@ -364,10 +363,7 @@ const validateField = (field: keyof typeof errors) => {
 const isFormValid = computed(() => {
   validateField("name");
   return (
-    company.name.trim().length >= 2 &&
-    company.type.length > 0 &&
-    company.sector.length > 0 &&
-    !errors.name
+    company.name.trim().length >= 2 && company.sector.length > 0 && !errors.name
   );
 });
 
