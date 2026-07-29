@@ -1,43 +1,55 @@
 <template>
-  <!-- URL -->
-  <a
-    v-if="application.offerUrl"
-    :href="application.offerUrl"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="w-max h-max mt-3 inline-flex items-center text-xs text-blue-500 hover:text-blue-700 transition-colors"
+  <div
+    class="group w-72 h-40 bg-white rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer"
+    @click="$emit('click', application._id)"
   >
-    <div
-      class="group w-72 h-40 bg-white rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 overflow-hidden"
-    >
-      <!-- Bande de statut -->
-      <div class="h-1" :class="statusColor"></div>
-
-      <div class="p-4">
-        <!-- Titre + Statut -->
-        <div class="flex items-start justify-between gap-3">
-          <h3
-            class="text-base font-semibold text-gray-900 truncate flex-1"
-            :title="application.title"
-          >
-            {{ application.title }}
-          </h3>
+    <!-- Bande de statut -->
+    <div class="h-1" :class="statusColor"></div>
+    <div class="p-4">
+      <!-- Titre + Statut -->
+      <div class="flex items-start justify-between gap-3">
+        <h3
+          class="text-base font-semibold text-gray-900 truncate flex-1"
+          :title="application.title"
+        >
+          {{ application.title }}
+        </h3>
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap"
+          :class="statusBadgeClass"
+        >
           <span
-            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap"
-            :class="statusBadgeClass"
-          >
-            <span
-              class="w-1.5 h-1.5 rounded-full mr-1"
-              :class="statusDotColor"
-            ></span>
-            {{ statusLabel }}
-          </span>
-        </div>
+            class="w-1.5 h-1.5 rounded-full mr-1"
+            :class="statusDotColor"
+          ></span>
+          {{ statusLabel }}
+        </span>
+      </div>
 
-        <!-- Entreprise -->
-        <div class="mt-2 flex items-center text-sm text-gray-600">
+      <!-- Entreprise -->
+      <div class="mt-2 flex items-center text-sm text-gray-600">
+        <svg
+          class="w-4 h-4 mr-1.5 text-gray-400 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+          />
+        </svg>
+        <span class="truncate">{{ companyName }}</span>
+      </div>
+
+      <!-- Infos complémentaires -->
+      <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-500">
+        <!-- Source -->
+        <span class="flex items-center">
           <svg
-            class="w-4 h-4 mr-1.5 text-gray-400 flex-shrink-0"
+            class="w-3.5 h-3.5 mr-1 text-gray-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -46,147 +58,148 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
             />
           </svg>
-          <span class="truncate">{{ companyName }}</span>
-        </div>
-
-        <!-- Infos complémentaires -->
-        <div
-          class="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-500"
-        >
-          <!-- Source -->
-          <span class="flex items-center">
-            <svg
-              class="w-3.5 h-3.5 mr-1 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
-            {{ sourceLabel }}
-          </span>
-
-          <!-- Date -->
-          <span class="flex items-center">
-            <svg
-              class="w-3.5 h-3.5 mr-1 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            {{ formattedDate }}
-          </span>
-
-          <!-- Ville (si disponible dans company) -->
-          <span v-if="application.city" class="flex items-center">
-            <svg
-              class="w-3.5 h-3.5 mr-1 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            {{ application.city }}
-          </span>
-        </div>
-
-        <!-- Dates d'entretien -->
-        <div v-if="hasInterviewDates" class="mt-2 flex flex-wrap gap-3 text-xs">
-          <span
-            v-if="application.HRInterviewDate"
-            class="flex items-center text-purple-600"
+          {{ sourceLabel }}
+        </span>
+        <!-- Date -->
+        <span class="flex items-center">
+          <svg
+            class="w-3.5 h-3.5 mr-1 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              class="w-3.5 h-3.5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            RH: {{ formatDate(application.HRInterviewDate) }}
-          </span>
-          <span
-            v-if="application.technicalInterviewDate"
-            class="flex items-center text-blue-600"
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          {{ formattedDate }}
+        </span>
+        <!-- Ville -->
+        <span v-if="application.city" class="flex items-center">
+          <svg
+            class="w-3.5 h-3.5 mr-1 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              class="w-3.5 h-3.5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-              />
-            </svg>
-            Tech: {{ formatDate(application.technicalInterviewDate) }}
-          </span>
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          {{ application.city }}
+        </span>
       </div>
+
+      <!-- Dates d'entretien -->
+      <div v-if="hasInterviewDates" class="mt-2 flex flex-wrap gap-3 text-xs">
+        <span
+          v-if="application.HRInterviewDate"
+          class="flex items-center text-purple-600"
+        >
+          <svg
+            class="w-3.5 h-3.5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+          RH: {{ formatDate(application.HRInterviewDate) }}
+        </span>
+        <span
+          v-if="application.technicalInterviewDate"
+          class="flex items-center text-blue-600"
+        >
+          <svg
+            class="w-3.5 h-3.5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+            />
+          </svg>
+          Tech: {{ formatDate(application.technicalInterviewDate) }}
+        </span>
+      </div>
+
+      <!-- Lien vers l'offre (affiché uniquement si l'URL existe) -->
+      <a
+        v-if="application.offerUrl"
+        :href="application.offerUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-2 inline-flex items-center text-xs text-blue-500 hover:text-blue-700 transition-colors"
+        @click.stop
+      >
+        <svg
+          class="w-3.5 h-3.5 mr-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+          />
+        </svg>
+        Voir l'offre
+      </a>
     </div>
-  </a>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { Application } from "../interfaces/Application";
-import type { Company } from "../interfaces/Company";
+import { useCompanyStore } from "../store/company";
+import { APPLICATION_STATUSES } from "../data/applicationStatus";
 
-// ✅ Props
+// ✅ Propriétés
 const props = defineProps<{
-  application: Application & { company?: Company };
+  application: Application;
+}>();
+
+// ✅ Événement émis au clic
+defineEmits<{
+  click: [id: string];
 }>();
 
 const application = props.application;
+const companyStore = useCompanyStore();
 
-// ✅ Statut
+// ✅ Statut (labels et couleurs)
 const statusLabel = computed(() => {
-  const labels: Record<string, string> = {
-    pending: "En attente",
-    call: "Call",
-    HRInterview: "Entretien RH",
-    technicalInterview: "Entretien technique",
-    accepted: "Acceptée",
-    refused: "Refusée",
-    abandoned: "Abandonnée",
-  };
-  return labels[application.status] || application.status;
+  const found = APPLICATION_STATUSES.find(
+    (s) => s.value === application.status,
+  );
+  return found?.label || application.status;
 });
 
 const statusColor = computed(() => {
@@ -228,9 +241,12 @@ const statusDotColor = computed(() => {
   return colors[application.status] || "bg-gray-500";
 });
 
-// ✅ Company
+// ✅ Nom de l'entreprise (depuis le store des entreprises)
 const companyName = computed(() => {
-  return application.company?.name || "Entreprise non spécifiée";
+  const comp = companyStore.companies.find(
+    (c) => c._id === application.companyID,
+  );
+  return comp?.name || "Entreprise non spécifiée";
 });
 
 // ✅ Source
@@ -249,17 +265,14 @@ const sourceLabel = computed(() => {
 
 // ✅ Dates
 const formattedDate = computed(() => {
-  if (application.date) {
-    return formatDate(application.date);
-  }
-  return "Date non définie";
+  return application.date ? formatDate(application.date) : "Date non définie";
 });
 
 const hasInterviewDates = computed(() => {
   return !!(application.HRInterviewDate || application.technicalInterviewDate);
 });
 
-// ✅ Utilitaires
+// ✅ Utilitaire de formatage
 const formatDate = (date: string) => {
   if (!date) return "";
   const d = new Date(date);
@@ -269,6 +282,4 @@ const formatDate = (date: string) => {
     year: "numeric",
   });
 };
-
-// ✅ Pas besoin de onMounted
 </script>

@@ -18,6 +18,11 @@ const routes: RouteRecordRaw[] = [
     name: "createCompany",
     component: () => import("../views/createCompany.vue"),
   },
+  {
+    path: "/applications",
+    name: "applications",
+    component: () => import("../views/ApplicationList.vue"),
+  },
 ];
 
 // Création du routeur
