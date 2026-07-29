@@ -891,7 +891,7 @@ const isFormValid = computed(() => {
 // ✅ Ajouter une entreprise
 const addCompany = () => {
   applicationStore.setApplication(application);
-  router.push("/applications/addApplication/addCompany");
+  router.push("/createCompany");
 };
 
 // ✅ Créer la candidature
