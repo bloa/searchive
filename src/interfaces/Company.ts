@@ -3,5 +3,5 @@ export interface Company {
   name: string;
   webSite?: string;
   sector: string;
-  size?: "1-10" | "11-50" | "51-100" | "101-1000" | "1001+";
+  size: "1-10" | "11-50" | "51-100" | "101-1000" | "1001+";
 }
