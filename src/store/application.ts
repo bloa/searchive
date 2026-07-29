@@ -1,22 +1,19 @@
 import { defineStore } from "pinia";
-import { ref, computed, type Ref } from "vue";
+import { ref, computed, reactive } from "vue";
 import type { Application } from "../interfaces/Application";
 import { generateId } from "../utils/generatingIDs";
 import { useLocalStorage } from "./localStorage";
 
 export const useApplicationStore = defineStore("applicationStore", () => {
   const storageKey = "applications";
-  const save = () => {
-    useLocalStorage().setItem(storageKey, applications);
-  };
-  // State (réactif)
-  const count = ref<number>(0);
-  const message = ref<string>("Hello Pinia!");
-  const applications: Ref<Application[]> = ref(
+
+  // State
+  const applications = ref<Application[]>(
     useLocalStorage().getItem(storageKey, []),
   );
-  const application: Ref<Application> = ref({
-    title: "",
+
+  const application = reactive<Application>({
+    title: "fdsfs",
     companyID: "",
     status: "pending",
     offerSource: "LinkedIn",
@@ -29,24 +26,20 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     email: "",
     phoneIndex: 33,
     phone: 767566603,
-    city: "",
+    city: "fdsfs",
     postalCode: 35000,
   } as Application);
 
-  // Getters (computed)
-  const doubleCount = computed(() => count.value * 2);
-  const formattedMessage = computed(() => `📝 ${message.value}`);
+  // Sauvegarde
+  const save = () => {
+    useLocalStorage().setItem(storageKey, applications.value);
+  };
 
-  // Actions (fonctions)
-  function increment(amount: number = 1) {
-    count.value += amount;
-  }
+  // Actions
   function setApplication(app: Application) {
-    application.value = app;
+    Object.assign(application, app);
   }
-  function decrement(amount: number = 1) {
-    count.value -= amount;
-  }
+
   function create(app: Application): Application {
     const id = generateId();
     app._id = id;
@@ -55,32 +48,49 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     return app;
   }
 
-  function reset() {
-    count.value = 0;
-    message.value = "Hello Pinia!";
+  // Autres actions
+  function deleteApplication(id: string) {
+    applications.value = applications.value.filter((app) => app._id !== id);
+    save();
   }
 
-  async function updateMessageAsync(newMessage: string) {
-    // Simuler un appel API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    message.value = newMessage;
+  function updateApplication(id: string, updatedApp: Partial<Application>) {
+    const index = applications.value.findIndex((app) => app._id === id);
+    if (index !== -1) {
+      applications.value[index] = {
+        ...applications.value[index],
+        ...updatedApp,
+      };
+      save();
+    }
   }
 
-  // Tout exporter
+  function getApplicationById(id: string): Application | undefined {
+    return applications.value.find((app) => app._id === id);
+  }
+
+  // Getters
+  const totalApplications = computed(() => applications.value.length);
+  const pendingApplications = computed(() =>
+    applications.value.filter((app) => app.status === "pending"),
+  );
+  const acceptedApplications = computed(() =>
+    applications.value.filter((app) => app.status === "accepted"),
+  );
+
   return {
     // State
-    count,
-    message,
+    applications,
     application,
     // Getters
-    doubleCount,
-    formattedMessage,
+    totalApplications,
+    pendingApplications,
+    acceptedApplications,
     // Actions
-    increment,
-    decrement,
-    reset,
-    updateMessageAsync,
     setApplication,
     create,
+    deleteApplication,
+    updateApplication,
+    getApplicationById,
   };
 });
