@@ -342,10 +342,7 @@ const validateField = (field: keyof typeof errors) => {
 const isFormValid = computed(() => {
   validateField("name");
   return (
-    company.name.trim().length >= 2 &&
-    company.sector.length > 0 &&
-    company.size.length > 0 &&
-    !errors.name
+    company.name.trim().length >= 2 && company.sector.length > 0 && !errors.name
   );
 });
 
