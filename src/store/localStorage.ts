@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 
 export const useLocalStorage = defineStore("localStore", () => {
   const getItem = (key: string): any => {
