@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "home",
-    component: () => import("../views/Dashboard.vue"), // Lazy loading
+    component: () => import("../views/ApplicationList.vue"), // Lazy loading
   },
   {
     path: "/createApplication",
