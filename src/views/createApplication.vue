@@ -458,7 +458,7 @@
                   v-model="application.phoneIndex"
                   class="w-14 py-3 pl-5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   @blur="validateField('phoneIndex')"
-                  @input="errors.phoneIndex = ''"
+                  @input="phoneIndexInput()"
                   :class="
                     errors.phoneIndex
                       ? 'border-red-500 focus:ring-red-500'
@@ -887,6 +887,13 @@ const isFormValid = computed(() => {
     !errors.postalCode
   );
 });
+
+const phoneIndexInput = () => {
+  errors.phoneIndex = "";
+  if (application.phoneIndex! > 999) {
+    application.phoneIndex = 0;
+  }
+};
 
 // ✅ Ajouter une entreprise
 const addCompany = () => {
