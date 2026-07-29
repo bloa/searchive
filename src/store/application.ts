@@ -1,12 +1,30 @@
 import { defineStore } from "pinia";
 import { ref, computed, type Ref } from "vue";
 import type { Application } from "../interfaces/Application";
+import { generateId } from "../utils/generatingIDs";
+import { useLocalStorage } from "./localStorage";
 
 export const useApplicationStore = defineStore("applicationStore", () => {
   // State (réactif)
   const count = ref<number>(0);
   const message = ref<string>("Hello Pinia!");
-  const application: Ref<Application> = ref({ title: "" } as Application);
+  const application: Ref<Application> = ref({
+    title: "",
+    companyID: "",
+    status: "pending",
+    offerSource: "LinkedIn",
+    offerUrl: "",
+    date: "",
+    responseDate: "",
+    HRInterviewDate: "",
+    technicalInterviewDate: "",
+    acceptationDate: "",
+    email: "",
+    phoneIndex: 33,
+    phone: 767566603,
+    city: "",
+    postalCode: 35000,
+  } as Application);
 
   // Getters (computed)
   const doubleCount = computed(() => count.value * 2);
@@ -23,7 +41,17 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     count.value -= amount;
   }
   function create(app: Application): Application {
-    return {} as Application;
+    const id = generateId();
+    app._id = id;
+    const applications: Application[] | null =
+      useLocalStorage().getItem("applications");
+    if (applications != null) {
+      applications.push(app);
+      useLocalStorage().setItem("applications", applications);
+    } else {
+      useLocalStorage().setItem("applications", [app]);
+    }
+    return app;
   }
 
   function reset() {

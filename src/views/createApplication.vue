@@ -455,10 +455,10 @@
                 <input
                   type="number"
                   placeholder="33"
-                  v-model="application.phone"
+                  v-model="application.phoneIndex"
                   class="w-14 py-3 pl-5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  @blur="validateField('postalCode')"
-                  @input="errors.postalCode = ''"
+                  @blur="validateField('phoneIndex')"
+                  @input="errors.phoneIndex = ''"
                   :class="
                     errors.phoneIndex
                       ? 'border-red-500 focus:ring-red-500'
