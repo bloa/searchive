@@ -1,49 +1,48 @@
 import { defineStore } from "pinia";
-import { ref, computed, type Ref } from "vue";
+import { ref, reactive } from "vue";
+import { useLocalStorage } from "./localStorage";
 import type { Company } from "../interfaces/Company";
 
 export const useCompanyStore = defineStore("companyStore", () => {
-  // State (réactif)
-  const count = ref<number>(0);
-  const message = ref<string>("Hello Pinia!");
-  const companies: Ref<Company[]> = ref([]);
-  // Getters (computed)
-  const doubleCount = computed(() => count.value * 2);
-  const formattedMessage = computed(() => `📝 ${message.value}`);
+  const storage = useLocalStorage();
+  const STORAGE_KEY = "companies";
 
-  // Actions (fonctions)
-  function increment(amount: number = 1) {
-    count.value += amount;
+  const companies = ref<Company[]>(
+    storage.getItem<Company[]>(STORAGE_KEY) || [],
+  );
+
+  const company = reactive<Company>({
+    name: "",
+    webSite: "",
+    type: "",
+    sector: "",
+  });
+
+  function save() {
+    storage.setItem(STORAGE_KEY, companies.value);
   }
 
-  function decrement(amount: number = 1) {
-    count.value -= amount;
+  function createCompany(data: Company): Company | null {
+    const newCompany: Company = {
+      ...data,
+      _id: crypto.randomUUID?.() ?? Date.now().toString(),
+    };
+    companies.value.push(newCompany);
+    save();
+    return newCompany;
   }
 
-  function reset() {
-    count.value = 0;
-    message.value = "Hello Pinia!";
+  function resetCompanyForm() {
+    company.name = "";
+    company.webSite = "";
+    company.type = "";
+    company.sector = "";
   }
 
-  async function updateMessageAsync(newMessage: string) {
-    // Simuler un appel API
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    message.value = newMessage;
-  }
-
-  // Tout exporter
   return {
-    // State
-    count,
-    message,
     companies,
-    // Getters
-    doubleCount,
-    formattedMessage,
-    // Actions
-    increment,
-    decrement,
-    reset,
-    updateMessageAsync,
+    company,
+    createCompany,
+    resetCompanyForm,
   };
 });
