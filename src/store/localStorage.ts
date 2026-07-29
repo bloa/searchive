@@ -1,14 +1,10 @@
 import { defineStore } from "pinia";
 
 export const useLocalStorage = defineStore("localStore", () => {
-  const getItem = <T>(key: string): T | null => {
+  const getItem = (key: string, defaultReturn?: any) => {
     const val = localStorage.getItem(key);
-    if (val === null) return null;
-    try {
-      return JSON.parse(val) as T;
-    } catch {
-      return val as unknown as T;
-    }
+    if (val === null) return defaultReturn;
+    return JSON.parse(val);
   };
   const setItem = (key: string, value: any): void => {
     localStorage.setItem(key, JSON.stringify(value));

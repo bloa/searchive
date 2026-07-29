@@ -8,9 +8,7 @@ export const useCompanyStore = defineStore("companyStore", () => {
   const storage = useLocalStorage();
   const STORAGE_KEY = "companies";
 
-  const companies = ref<Company[]>(
-    storage.getItem<Company[]>(STORAGE_KEY) || [],
-  );
+  const companies = ref<Company[]>(storage.getItem(STORAGE_KEY, []));
 
   const company = reactive<Company>({
     name: "",

@@ -13,7 +13,7 @@ export const useApplicationStore = defineStore("applicationStore", () => {
   const count = ref<number>(0);
   const message = ref<string>("Hello Pinia!");
   const applications: Ref<Application[]> = ref(
-    useLocalStorage().getItem(storageKey) as Application[] | [],
+    useLocalStorage().getItem(storageKey, []),
   );
   const application: Ref<Application> = ref({
     title: "",
