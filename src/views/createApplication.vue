@@ -2,6 +2,13 @@
   <div
     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8"
   >
+    <Notification
+      v-if="notification.show"
+      :message="notification.message"
+      :sub-message="notification.subMessage"
+      :type="notification.type"
+      @close="notification.show = false"
+    />
     <!-- Carte principale -->
     <div class="max-w-3xl w-full space-y-8 bg-white p-8 rounded-2xl shadow-2xl">
       <!-- En-tête -->
@@ -700,6 +707,7 @@ import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import { useCompanyStore } from "../store/company";
 import { useRouter } from "vue-router";
+import Notification from "../components/notification.vue";
 // Stores
 const applicationStore = useApplicationStore();
 const companyStore = useCompanyStore();
@@ -720,19 +728,15 @@ const errors = reactive({
   city: "",
   postalCode: "",
 });
-
+const notification = reactive({
+  show: false,
+  message: "",
+  subMessage: "",
+  type: "success" as "success" | "error",
+});
 // ✅ État du formulaire
 const application: Application = applicationStore.$state.application;
 const companies = companyStore.$state.companies;
-
-// ✅ Computed pour l'affichage du phoneIndex
-// const phoneIndexDisplay = computed({
-//   get: () => application.phoneIndex?.toString() || "",
-//   set: (value: string) => {
-//     const clean = value.replace(/\D/g, "").slice(0, 3);
-//     application.phoneIndex = clean ? parseInt(clean) : undefined;
-//   },
-// });
 
 // ✅ Computed pour l'affichage du phone
 const phoneDisplay = computed({
@@ -742,14 +746,6 @@ const phoneDisplay = computed({
     application.phone = clean ? parseInt(clean) : undefined;
   },
 });
-
-// ✅ Mise à jour du phoneIndex
-const updatePhoneIndex = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const clean = input.value.replace(/\D/g, "").slice(0, 3);
-  input.value = clean;
-  application.phoneIndex = clean ? parseInt(clean) : undefined;
-};
 
 // ✅ Mise à jour du phone
 const updatePhone = (event: Event) => {
@@ -923,13 +919,15 @@ const createApplication = async () => {
   isLoading.value = true;
 
   try {
-    console.log("before creating", application);
     const res = applicationStore.create(application);
-    console.log("res", res);
 
     if (res && res._id) {
       resetForm();
-      router.push("/?addingApplication=1");
+      // ✅ Afficher la notification
+      notification.show = true;
+      notification.type = "success";
+      notification.message = "✅ Candidature ajoutée avec succès !";
+      notification.subMessage = `"${application.title}" a été enregistrée`;
     }
   } catch (error) {
     console.error("Erreur lors de la création:", error);

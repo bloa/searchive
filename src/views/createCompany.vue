@@ -3,7 +3,9 @@
     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8"
   >
     <!-- Carte principale -->
-    <div class="max-w-2xl w-full space-y-8 bg-white p-8 rounded-2xl shadow-2xl">
+    <div
+      class="max-w-2xl w-full space-y-8 bg-white p-8 rounded-2xl shadow-2xl relative"
+    >
       <!-- En-tête -->
       <div>
         <div class="flex justify-center">
@@ -216,48 +218,6 @@
             </div>
           </div>
 
-          <!-- Message d'erreur général -->
-          <div
-            v-if="generalError"
-            class="rounded-lg bg-red-50 p-4 border border-red-200"
-          >
-            <div class="flex items-center">
-              <svg
-                class="h-5 w-5 text-red-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <p class="ml-2 text-sm text-red-700">{{ generalError }}</p>
-            </div>
-          </div>
-
-          <!-- Message de succès -->
-          <div
-            v-if="successMessage"
-            class="rounded-lg bg-green-50 p-4 border border-green-200"
-          >
-            <div class="flex items-center">
-              <svg
-                class="h-5 w-5 text-green-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <p class="ml-2 text-sm text-green-700">{{ successMessage }}</p>
-            </div>
-          </div>
-
           <!-- Boutons -->
           <div class="flex gap-4 pt-4">
             <button
@@ -312,6 +272,15 @@
           </div>
         </div>
       </form>
+
+      <!-- ✅ Composant Notification -->
+      <Notification
+        v-if="notification.show"
+        :message="notification.message"
+        :sub-message="notification.subMessage"
+        :type="notification.type"
+        @close="closeNotification"
+      />
     </div>
   </div>
 </template>
@@ -323,6 +292,8 @@ import { useCompanyStore } from "../store/company";
 import { COMPANY_SECTORS } from "../data/companySectores";
 import { COMPANY_SIZES } from "../data/companySizes";
 import type { Company } from "../interfaces/Company";
+// ✅ Importer le composant Notification
+import Notification from "../components/Notification.vue";
 
 const router = useRouter();
 const companyStore = useCompanyStore();
@@ -332,6 +303,14 @@ const company: Company = reactive(companyStore.company);
 const isLoading = ref(false);
 const generalError = ref("");
 const successMessage = ref("");
+
+// ✅ Notification
+const notification = reactive({
+  show: false,
+  message: "",
+  subMessage: "",
+  type: "success" as "success" | "error",
+});
 
 const errors = reactive({
   name: "",
@@ -363,9 +342,17 @@ const validateField = (field: keyof typeof errors) => {
 const isFormValid = computed(() => {
   validateField("name");
   return (
-    company.name.trim().length >= 2 && company.sector.length > 0 && !errors.name
+    company.name.trim().length >= 2 &&
+    company.sector.length > 0 &&
+    company.size.length > 0 &&
+    !errors.name
   );
 });
+
+// ✅ Fermer la notification
+const closeNotification = () => {
+  notification.show = false;
+};
 
 const createCompany = () => {
   validateField("name");
@@ -373,7 +360,12 @@ const createCompany = () => {
 
   const hasErrors = Object.values(errors).some((err) => err !== "");
   if (hasErrors || !isFormValid.value) {
-    generalError.value = "Veuillez corriger les erreurs dans le formulaire";
+    // ✅ Utiliser la notification pour l'erreur
+    notification.show = true;
+    notification.type = "error";
+    notification.message = "❌ Formulaire invalide";
+    notification.subMessage =
+      "Veuillez corriger les erreurs dans le formulaire";
     return;
   }
 
@@ -384,14 +376,41 @@ const createCompany = () => {
   try {
     const res = companyStore.createCompany(company);
     if (res && res._id) {
+      // ✅ Notification de succès
+      notification.show = true;
+      notification.type = "success";
+      notification.message = "✅ Entreprise ajoutée avec succès !";
+      notification.subMessage = `"${company.name}" a été enregistrée`;
+
       successMessage.value = "Entreprise ajoutée avec succès !";
       companyStore.resetCompanyForm(); // vide le formulaire
+
+      // ✅ Fermer automatiquement après 5 secondes
+      setTimeout(() => {
+        closeNotification();
+      }, 5000);
     } else {
+      // ✅ Notification d'erreur
+      notification.show = true;
+      notification.type = "error";
+      notification.message = "❌ Erreur lors de l'ajout";
+      notification.subMessage = "Veuillez réessayer";
+
       generalError.value = "Erreur lors de l'ajout de l'entreprise";
     }
   } catch (error: any) {
+    // ✅ Notification d'erreur
+    notification.show = true;
+    notification.type = "error";
+    notification.message = "❌ Une erreur est survenue";
+    notification.subMessage = error.message || "Veuillez réessayer";
+
     generalError.value = error.message || "Une erreur est survenue";
     console.error("Erreur création entreprise:", error);
+
+    setTimeout(() => {
+      closeNotification();
+    }, 5000);
   } finally {
     isLoading.value = false;
   }
