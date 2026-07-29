@@ -1,7 +1,7 @@
 <template>
   <div
-    class="group w-72 h-40 bg-white rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer"
-    @click="$emit('click', application._id)"
+    class="group w-72 h-40 bg-white rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 overflow-hidden"
+    @click="$emit('click', application._id as string)"
   >
     <!-- Bande de statut -->
     <div class="h-1" :class="statusColor"></div>
