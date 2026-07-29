@@ -341,7 +341,7 @@ const errors = reactive({
 const validateField = (field: keyof typeof errors) => {
   switch (field) {
     case "name":
-      if (!company.name || company.name.trim().length < 2) {
+      if (company.name != "" && company.name.trim().length < 2) {
         errors.name = "Le nom doit contenir au moins 2 caractères";
       } else if (company.name.length > 100) {
         errors.name = "Le nom ne doit pas dépasser 100 caractères";
