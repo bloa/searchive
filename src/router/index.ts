@@ -13,6 +13,11 @@ const routes: RouteRecordRaw[] = [
     name: "add application",
     component: () => import("../views/createApplication.vue"), // Lazy loading
   },
+  {
+    path: "/createCompany",
+    name: "createCompany",
+    component: () => import("../views/createCompany.vue"),
+  },
 ];
 
 // Création du routeur
