@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import type { Application } from "../interfaces/Application";
 import { generateId } from "../utils/generatingIDs";
 import { useLocalStorage } from "./localStorage";
@@ -13,7 +13,7 @@ export const useApplicationStore = defineStore("applicationStore", () => {
   );
 
   const application = reactive<Application>({
-    title: "fdsfs",
+    title: "",
     companyID: "",
     status: "pending",
     offerSource: "LinkedIn",
@@ -25,10 +25,10 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     acceptationDate: "",
     email: "",
     phoneIndex: 33,
-    phone: 767566603,
-    city: "fdsfs",
+    phone: undefined,
+    city: "",
     postalCode: 35000,
-  } as Application);
+  });
 
   // Sauvegarde
   const save = () => {
@@ -41,14 +41,12 @@ export const useApplicationStore = defineStore("applicationStore", () => {
   }
 
   function create(app: Application): Application {
-    const id = generateId();
-    app._id = id;
-    applications.value.push(app);
+    const newApp = { ...app, _id: generateId() };
+    applications.value.push(newApp);
     save();
-    return app;
+    return newApp;
   }
 
-  // Autres actions
   function deleteApplication(id: string) {
     applications.value = applications.value.filter((app) => app._id !== id);
     save();
@@ -67,6 +65,26 @@ export const useApplicationStore = defineStore("applicationStore", () => {
 
   function getApplicationById(id: string): Application | undefined {
     return applications.value.find((app) => app._id === id);
+  }
+
+  function resetForm() {
+    Object.assign(application, {
+      title: "",
+      companyID: "",
+      status: "pending",
+      offerSource: "LinkedIn",
+      offerUrl: "",
+      date: new Date().toISOString().split("T")[0],
+      responseDate: "",
+      HRInterviewDate: "",
+      technicalInterviewDate: "",
+      acceptationDate: "",
+      email: "",
+      phoneIndex: 33,
+      phone: undefined,
+      city: "",
+      postalCode: 35000,
+    });
   }
 
   // Getters
@@ -92,5 +110,6 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     deleteApplication,
     updateApplication,
     getApplicationById,
+    resetForm,
   };
 });
