@@ -23,6 +23,11 @@ const routes: RouteRecordRaw[] = [
     name: "applications",
     component: () => import("../views/ApplicationList.vue"),
   },
+  {
+    path: "/statistics",
+    name: "statistics",
+    component: () => import("../views/Statistics.vue"),
+  },
 ];
 
 // Création du routeur

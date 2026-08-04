@@ -8,6 +8,13 @@
       >
         + Nouvelle
       </router-link>
+
+      <router-link
+        to="/statistics"
+        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+      >
+        📊 Statistiques
+      </router-link>
     </div>
 
     <!-- Barre de recherche et filtre -->
