@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-80">
     <div class="flex justify-end gap-2 mb-2">
       <button
         @click="setMode('cumulative')"
