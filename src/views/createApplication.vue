@@ -688,7 +688,7 @@
             <button
               type="button"
               @click="router.push('/')"
-              class="py-3 px-6 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200"
+              class="py-3 cursor-pointer px-6 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-200"
             >
               Annuler
             </button>
