@@ -179,6 +179,11 @@
         <div class="flex items-center gap-1">
           <!-- Bouton pour modifier le statut -->
           <button
+            v-if="
+              application.status != 'refused' &&
+              application.status != 'accepted' &&
+              application.status != 'abandoned'
+            "
             @click.stop="$emit('edit', application._id as string)"
             class="text-gray-400 hover:text-blue-500 transition-colors p-1 rounded hover:bg-blue-50"
             title="Modifier le statut"
