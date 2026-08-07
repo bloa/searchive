@@ -77,12 +77,12 @@ const createChart = () => {
 
   // ✅ Couleurs pour les statuts
   const statusColors = [
-    "rgba(59, 130, 246, 0.7)",
-    "rgba(139, 92, 246, 0.7)",
-    "rgba(34, 197, 94, 0.7)",
-    "rgba(239, 68, 68, 0.7)",
-    "rgba(251, 191, 36, 0.7)",
-    "rgba(107, 114, 128, 0.7)",
+    "rgba(59, 120, 246, 0.7)", //call
+    "rgba(239, 68, 68, 0.7)", //refused
+    "rgba(139, 92, 246, 0.7)", //"rh"
+    "rgba(34, 197, 94, 0.7)", //accpted
+    "rgba(59, 140, 246, 0.7)", //tecn
+    "rgba(251, 191, 36, 0.7)", //pending
   ];
 
   // ✅ Construire les datasets
