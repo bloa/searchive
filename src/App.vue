@@ -6,7 +6,10 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalStorage } from "./store/localStorage";
+
 // Pas besoin d'import supplémentaire
+useLocalStorage().fillTestData();
 </script>
 
 <style scoped>
