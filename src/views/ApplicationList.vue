@@ -2,19 +2,20 @@
   <div class="container mx-auto max-w-5xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-800">📋 Mes candidatures</h1>
-      <router-link
-        to="/createApplication"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-      >
-        + Nouvelle
-      </router-link>
-
-      <router-link
-        to="/statistics"
-        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-      >
-        📊 Statistiques
-      </router-link>
+      <div class="flex gap-2">
+        <router-link
+          to="/createApplication"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          + Nouvelle
+        </router-link>
+        <router-link
+          to="/statistics"
+          class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+        >
+          📊 Statistiques
+        </router-link>
+      </div>
     </div>
 
     <!-- Barre de recherche et filtre -->
@@ -65,12 +66,21 @@
         :key="app._id"
         :application="app"
         @click="goToDetail"
+        @edit="openStatusModal(app._id as string)"
       />
     </div>
     <div v-else class="text-center py-12 text-gray-500">
       <p class="text-xl">Aucune candidature trouvée</p>
       <p class="mt-2">Essayez de modifier votre recherche ou filtre.</p>
     </div>
+
+    <!-- Modale de modification du statut -->
+    <StatusUpdateModal
+      :visible="statusModalVisible"
+      :currentStatus="selectedApplication?.status ?? 'pending'"
+      @close="statusModalVisible = false"
+      @confirm="handleStatusUpdate"
+    />
   </div>
 </template>
 
@@ -80,7 +90,9 @@ import { useRouter } from "vue-router";
 import { useApplicationStore } from "../store/application";
 import { useCompanyStore } from "../store/company";
 import { APPLICATION_STATUSES } from "../data/applicationStatus";
-import ApplicationCard from "../components/Application.vue"; // ← ton fichier actuel
+import ApplicationCard from "../components/Application.vue";
+import StatusUpdateModal from "../components/StatusUpdateModal.vue";
+import type { Application } from "../interfaces/Application"; // Nécessaire pour l'assertion de type
 
 const router = useRouter();
 const appStore = useApplicationStore();
@@ -112,9 +124,36 @@ const filteredApplications = computed(() => {
   return apps;
 });
 
-// ✅ Action au clic sur une carte (à développer au Sprint 2)
+// ✅ Clic sur une carte (détail pour le futur)
 const goToDetail = (id: string) => {
   console.log("Candidature cliquée:", id);
   // router.push(`/application/${id}`);
 };
+
+// ✅ Gestion de la modale de modification de statut
+const statusModalVisible = ref(false);
+const selectedApplicationId = ref<string | null>(null);
+
+const selectedApplication = computed(() => {
+  if (!selectedApplicationId.value) return null;
+  return appStore.getApplicationById(selectedApplicationId.value);
+});
+
+function openStatusModal(id: string) {
+  selectedApplicationId.value = id;
+  statusModalVisible.value = true;
+}
+
+function handleStatusUpdate(newStatus: string, date: string) {
+  if (selectedApplicationId.value) {
+    // Assertion de type nécessaire car updateStatus attend le type littéral
+    appStore.updateStatus(
+      selectedApplicationId.value,
+      newStatus as Application["status"],
+      date,
+    );
+    statusModalVisible.value = false;
+    selectedApplicationId.value = null;
+  }
+}
 </script>

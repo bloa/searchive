@@ -147,30 +147,56 @@
         </span>
       </div>
 
-      <!-- Lien vers l'offre (affiché uniquement si l'URL existe) -->
-      <a
-        v-if="application.offerUrl"
-        :href="application.offerUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mt-2 inline-flex items-center text-xs text-blue-500 hover:text-blue-700 transition-colors"
-        @click.stop
-      >
-        <svg
-          class="w-3.5 h-3.5 mr-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <!-- Actions en bas de carte : lien vers l'offre + bouton modifier -->
+      <div class="mt-2 flex items-center justify-between">
+        <!-- Lien vers l'offre (affiché uniquement si l'URL existe) -->
+        <a
+          v-if="application.offerUrl"
+          :href="application.offerUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center text-xs text-blue-500 hover:text-blue-700 transition-colors"
+          @click.stop
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-          />
-        </svg>
-        Voir l'offre
-      </a>
+          <svg
+            class="w-3.5 h-3.5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+          Voir l'offre
+        </a>
+        <div v-else></div>
+        <!-- espace réservé pour aligner le bouton à droite -->
+
+        <!-- Bouton pour modifier le statut -->
+        <button
+          @click.stop="$emit('edit', application._id as string)"
+          class="text-gray-400 hover:text-blue-500"
+          title="Modifier le statut"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -186,9 +212,10 @@ const props = defineProps<{
   application: Application;
 }>();
 
-// ✅ Événement émis au clic
+// ✅ Événements émis : clic général et clic sur le bouton de modification
 defineEmits<{
   click: [id: string];
+  edit: [id: string];
 }>();
 
 const application = props.application;

@@ -31,4 +31,10 @@ export interface Application {
   email?: string;
   city: string;
   postalCode: number;
+  statusHistory?: StatusHistoryEntry[];
+}
+
+export interface StatusHistoryEntry {
+  status: Application["status"];
+  date: string; // format YYYY-MM-DD
 }

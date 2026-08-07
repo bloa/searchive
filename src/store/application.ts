@@ -87,6 +87,51 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     });
   }
 
+  function updateStatus(
+    id: string,
+    newStatus: Application["status"],
+    date: string,
+  ) {
+    const index = applications.value.findIndex((app) => app._id === id);
+    if (index === -1) return;
+
+    const app = applications.value[index];
+
+    // Initialiser l'historique de statuts s'il n'existe pas encore
+    if (!app.statusHistory) {
+      app.statusHistory = [];
+      // Premier élément : statut initial avec la date de candidature
+      if (app.date) {
+        app.statusHistory.push({ status: app.status, date: app.date });
+      }
+    }
+
+    // Ajouter le nouveau statut à l'historique
+    app.statusHistory.push({ status: newStatus, date });
+
+    // Mettre à jour le statut courant
+    app.status = newStatus;
+
+    // Renseigner automatiquement le champ de date correspondant
+    switch (newStatus) {
+      case "call":
+        app.responseDate = date;
+        break;
+      case "HRInterview":
+        app.HRInterviewDate = date;
+        break;
+      case "technicalInterview":
+        app.technicalInterviewDate = date;
+        break;
+      case "accepted":
+        app.acceptationDate = date;
+        break;
+      // refused n'a pas de champ dédié, on conserve uniquement l'historique
+    }
+
+    save();
+  }
+
   // Getters
   const totalApplications = computed(() => applications.value.length);
   const pendingApplications = computed(() =>
@@ -111,5 +156,6 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     updateApplication,
     getApplicationById,
     resetForm,
+    updateStatus,
   };
 });
