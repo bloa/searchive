@@ -12,7 +12,7 @@
           <div class="gantt-timeline-header">
             <div
               v-for="tick in dateTicks"
-              :key="tick.label"
+              :key="tick.label + '-' + tick.left"
               class="gantt-tick"
               :style="{ left: tick.left + 'px' }"
             >
@@ -54,10 +54,10 @@ import { useApplicationStore } from "../store/application";
 
 const appStore = useApplicationStore();
 
-// Largeur en pixels par jour
-const DAY_WIDTH = 3;
+// Paramètres de mise à l'échelle
+const MIN_CHART_WIDTH = 700; // largeur minimale du graphique en pixels
+const MIN_DAY_WIDTH = 6; // pixels par jour minimum (7 jours d'écart = 42px → pas de chevauchement)
 
-// Couleurs par statut
 const statusColors: Record<string, string> = {
   pending: "#facc15",
   call: "#60a5fa",
@@ -91,11 +91,24 @@ const globalRange = computed(() => {
   return { min: min - pad, max: max + pad };
 });
 
-// Largeur totale du graphique en pixels
-const totalWidth = computed(() => {
-  const days = (globalRange.value.max - globalRange.value.min) / 86400000;
-  return Math.max(days * DAY_WIDTH + 200, 600);
+// Nombre total de jours
+const totalDays = computed(
+  () => (globalRange.value.max - globalRange.value.min) / 86400000,
+);
+
+// Largeur dynamique par jour (pixels/jour)
+const dayWidth = computed(() => {
+  if (totalDays.value * MIN_DAY_WIDTH >= MIN_CHART_WIDTH) {
+    return MIN_DAY_WIDTH;
+  } else {
+    return MIN_CHART_WIDTH / totalDays.value;
+  }
 });
+
+// Largeur totale du graphique (px)
+const totalWidth = computed(() =>
+  Math.max(totalDays.value * dayWidth.value, MIN_CHART_WIDTH),
+);
 
 // Repères de dates (tous les 7 jours)
 const dateTicks = computed(() => {
@@ -104,14 +117,20 @@ const dateTicks = computed(() => {
   const end = new Date(globalRange.value.max);
   const current = new Date(start);
   current.setHours(0, 0, 0, 0);
+
   while (current <= end) {
     const time = current.getTime();
-    const left = ((time - globalRange.value.min) / 86400000) * DAY_WIDTH;
+    const left = ((time - globalRange.value.min) / 86400000) * dayWidth.value;
     const isFirstOfMonth = current.getDate() === 1;
     const label = isFirstOfMonth
       ? current.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
       : current.getDate().toString();
-    ticks.push({ label, left });
+
+    // Éviter d'empiler des labels trop proches (moins de 40px d'écart)
+    const lastTick = ticks[ticks.length - 1];
+    if (!lastTick || left - lastTick.left > 40) {
+      ticks.push({ label, left });
+    }
     current.setDate(current.getDate() + 7);
   }
   return ticks;
@@ -129,8 +148,8 @@ const ganttData = computed(() => {
           index < arr.length - 1
             ? new Date(arr[index + 1].date).getTime()
             : Date.now();
-        const left = ((startMs - min) / 86400000) * DAY_WIDTH;
-        const width = ((endMs - startMs) / 86400000) * DAY_WIDTH;
+        const left = ((startMs - min) / 86400000) * dayWidth.value;
+        const width = ((endMs - startMs) / 86400000) * dayWidth.value;
         return {
           status: entry.status,
           start: entry.date,
@@ -153,6 +172,7 @@ const ganttData = computed(() => {
 </script>
 
 <style scoped>
+/* (le même que précédemment) */
 .gantt-wrapper {
   width: 100%;
 }
