@@ -12,7 +12,7 @@ export const useLocalStorage = defineStore("localStore", () => {
   };
   const fillTestData = () => {
     const companies = getItem("companies", []);
-    if (companies.length == 0) {
+    if (companies.length != 0) {
       return;
     }
     setItem("companies", testCompanies);
