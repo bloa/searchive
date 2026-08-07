@@ -1,3 +1,5 @@
+import type { Application } from "../interfaces/Application";
+
 export const testCompanies = [
   {
     _id: "comp_001",
@@ -140,8 +142,8 @@ export const testCompanies = [
     size: "11-50",
   },
 ];
-export const testApplications = [
-  // TechInnovate Solutions (comp_001) - 2 candidatures
+
+export const testApplications: Application[] = [
   {
     _id: "app_001",
     title: "Développeur Full Stack Senior",
@@ -156,6 +158,12 @@ export const testApplications = [
     email: "jean.dupont@email.com",
     city: "Paris",
     postalCode: 75001,
+    statusHistory: [
+      { status: "pending", date: "2026-01-15" },
+      { status: "call", date: "2026-01-20" },
+      { status: "HRInterview", date: "2026-01-25" },
+      { status: "technicalInterview", date: "2026-02-01" },
+    ],
   },
   {
     _id: "app_002",
@@ -170,9 +178,12 @@ export const testApplications = [
     email: "marie.martin@email.com",
     city: "Paris",
     postalCode: 75002,
+    statusHistory: [
+      { status: "pending", date: "2026-02-01" },
+      { status: "call", date: "2026-02-05" },
+      { status: "HRInterview", date: "2026-02-10" },
+    ],
   },
-
-  // GreenEco Energy (comp_002) - 2 candidatures
   {
     _id: "app_003",
     title: "Ingénieur en énergies renouvelables",
@@ -184,6 +195,7 @@ export const testApplications = [
     email: "pierre.durand@email.com",
     city: "Lyon",
     postalCode: 69001,
+    statusHistory: [{ status: "pending", date: "2026-02-10" }],
   },
   {
     _id: "app_004",
@@ -200,9 +212,14 @@ export const testApplications = [
     email: "sophie.lefevre@email.com",
     city: "Lyon",
     postalCode: 69002,
+    statusHistory: [
+      { status: "pending", date: "2025-12-01" },
+      { status: "HRInterview", date: "2025-12-10" },
+      { status: "call", date: "2025-12-15" },
+      { status: "technicalInterview", date: "2025-12-18" },
+      { status: "accepted", date: "2026-01-05" },
+    ],
   },
-
-  // DataFlow Analytics (comp_003) - 2 candidatures
   {
     _id: "app_005",
     title: "Data Scientist",
@@ -217,6 +234,10 @@ export const testApplications = [
     email: "thomas.petit@email.com",
     city: "Bordeaux",
     postalCode: 33000,
+    statusHistory: [
+      { status: "pending", date: "2026-01-20" },
+      { status: "call", date: "2026-01-22" },
+    ],
   },
   {
     _id: "app_006",
@@ -230,9 +251,12 @@ export const testApplications = [
     email: "emma.roux@email.com",
     city: "Bordeaux",
     postalCode: 33001,
+    statusHistory: [
+      { status: "pending", date: "2026-01-05" },
+      { status: "call", date: "2026-01-25" },
+      { status: "refused", date: "2026-01-25" },
+    ],
   },
-
-  // HealthCare Plus (comp_004) - 2 candidatures
   {
     _id: "app_007",
     title: "Infirmier coordinateur",
@@ -244,6 +268,7 @@ export const testApplications = [
     email: "lucas.moreau@email.com",
     city: "Marseille",
     postalCode: 13001,
+    statusHistory: [{ status: "pending", date: "2026-02-05" }],
   },
   {
     _id: "app_008",
@@ -259,9 +284,13 @@ export const testApplications = [
     email: "celine.bernard@email.com",
     city: "Marseille",
     postalCode: 13002,
+    statusHistory: [
+      { status: "pending", date: "2026-01-10" },
+      { status: "call", date: "2026-01-15" },
+      { status: "HRInterview", date: "2026-01-20" },
+      { status: "technicalInterview", date: "2026-01-28" },
+    ],
   },
-
-  // FinSecure Banking (comp_005) - 2 candidatures
   {
     _id: "app_009",
     title: "Analyste financier",
@@ -277,6 +306,13 @@ export const testApplications = [
     email: "nicolas.dubois@email.com",
     city: "Paris",
     postalCode: 75008,
+    statusHistory: [
+      { status: "pending", date: "2025-11-15" },
+      { status: "HRInterview", date: "2025-11-20" },
+      { status: "call", date: "2025-11-25" },
+      { status: "technicalInterview", date: "2025-11-28" },
+      { status: "accepted", date: "2025-12-10" },
+    ],
   },
   {
     _id: "app_010",
@@ -291,9 +327,12 @@ export const testApplications = [
     email: "elodie.garcia@email.com",
     city: "Paris",
     postalCode: 75009,
+    statusHistory: [
+      { status: "pending", date: "2026-02-01" },
+      { status: "call", date: "2026-02-03" },
+      { status: "HRInterview", date: "2026-02-12" },
+    ],
   },
-
-  // CloudSphere Technologies (comp_006) - 2 candidatures
   {
     _id: "app_011",
     title: "Cloud Architect",
@@ -308,6 +347,12 @@ export const testApplications = [
     email: "alexandre.martinez@email.com",
     city: "Toulouse",
     postalCode: 31000,
+    statusHistory: [
+      { status: "pending", date: "2026-01-08" },
+      { status: "call", date: "2026-01-12" },
+      { status: "HRInterview", date: "2026-01-18" },
+      { status: "technicalInterview", date: "2026-01-30" },
+    ],
   },
   {
     _id: "app_012",
@@ -320,9 +365,8 @@ export const testApplications = [
     email: "julie.richard@email.com",
     city: "Toulouse",
     postalCode: 31001,
+    statusHistory: [{ status: "pending", date: "2026-02-08" }],
   },
-
-  // EcoBuild Construction (comp_007) - 2 candidatures
   {
     _id: "app_013",
     title: "Ingénieur structure",
@@ -337,6 +381,10 @@ export const testApplications = [
     email: "maxime.leroy@email.com",
     city: "Nantes",
     postalCode: 44000,
+    statusHistory: [
+      { status: "pending", date: "2026-01-25" },
+      { status: "call", date: "2026-01-28" },
+    ],
   },
   {
     _id: "app_014",
@@ -350,9 +398,12 @@ export const testApplications = [
     email: "laura.blanc@email.com",
     city: "Nantes",
     postalCode: 44001,
+    statusHistory: [
+      { status: "pending", date: "2025-12-20" },
+      { status: "call", date: "2026-01-15" },
+      { status: "refused", date: "2026-01-15" },
+    ],
   },
-
-  // NeuroTech Research (comp_008) - 2 candidatures
   {
     _id: "app_015",
     title: "Chercheur en neurosciences",
@@ -368,6 +419,13 @@ export const testApplications = [
     email: "antoine.girard@email.com",
     city: "Strasbourg",
     postalCode: 67000,
+    statusHistory: [
+      { status: "pending", date: "2025-10-01" },
+      { status: "HRInterview", date: "2025-10-10" },
+      { status: "call", date: "2025-10-15" },
+      { status: "technicalInterview", date: "2025-10-20" },
+      { status: "accepted", date: "2025-11-01" },
+    ],
   },
   {
     _id: "app_016",
@@ -380,9 +438,8 @@ export const testApplications = [
     email: "claire.francois@email.com",
     city: "Strasbourg",
     postalCode: 67001,
+    statusHistory: [{ status: "pending", date: "2026-02-03" }],
   },
-
-  // AgriSmart Farms (comp_009) - 2 candidatures
   {
     _id: "app_017",
     title: "Agronome numérique",
@@ -397,6 +454,12 @@ export const testApplications = [
     email: "pascal.morin@email.com",
     city: "Rennes",
     postalCode: 35000,
+    statusHistory: [
+      { status: "pending", date: "2026-01-12" },
+      { status: "call", date: "2026-01-18" },
+      { status: "HRInterview", date: "2026-01-22" },
+      { status: "technicalInterview", date: "2026-02-03" },
+    ],
   },
   {
     _id: "app_018",
@@ -411,9 +474,12 @@ export const testApplications = [
     email: "isabelle.fournier@email.com",
     city: "Rennes",
     postalCode: 35001,
+    statusHistory: [
+      { status: "pending", date: "2026-01-28" },
+      { status: "call", date: "2026-02-01" },
+      { status: "HRInterview", date: "2026-02-08" },
+    ],
   },
-
-  // RetailVision Group (comp_010) - 2 candidatures
   {
     _id: "app_019",
     title: "Chef de produit e-commerce",
@@ -428,6 +494,10 @@ export const testApplications = [
     email: "caroline.robert@email.com",
     city: "Lille",
     postalCode: 59000,
+    statusHistory: [
+      { status: "pending", date: "2026-02-02" },
+      { status: "call", date: "2026-02-04" },
+    ],
   },
   {
     _id: "app_020",
@@ -440,9 +510,8 @@ export const testApplications = [
     email: "benjamin.chevalier@email.com",
     city: "Lille",
     postalCode: 59001,
+    statusHistory: [{ status: "pending", date: "2026-02-06" }],
   },
-
-  // CyberShield Security (comp_011) - 2 candidatures
   {
     _id: "app_021",
     title: "Ingénieur en cybersécurité",
@@ -457,6 +526,13 @@ export const testApplications = [
     email: "victor.andre@email.com",
     city: "Sophia-Antipolis",
     postalCode: 65600,
+    statusHistory: [
+      { status: "pending", date: "2025-12-15" },
+      { status: "HRInterview", date: "2025-12-20" },
+      { status: "technicalInterview", date: "2025-12-28" },
+      { status: "call", date: "2026-01-10" },
+      { status: "refused", date: "2026-01-10" },
+    ],
   },
   {
     _id: "app_022",
@@ -473,9 +549,14 @@ export const testApplications = [
     email: "amelie.mercier@email.com",
     city: "Sophia-Antipolis",
     postalCode: 65610,
+    statusHistory: [
+      { status: "pending", date: "2025-11-05" },
+      { status: "HRInterview", date: "2025-11-12" },
+      { status: "call", date: "2025-11-15" },
+      { status: "technicalInterview", date: "2025-11-22" },
+      { status: "accepted", date: "2025-12-01" },
+    ],
   },
-
-  // BioGenetics Lab (comp_012) - 2 candidatures
   {
     _id: "app_023",
     title: "Bioinformaticien",
@@ -487,6 +568,7 @@ export const testApplications = [
     email: "simon.david@email.com",
     city: "Montpellier",
     postalCode: 34000,
+    statusHistory: [{ status: "pending", date: "2026-02-04" }],
   },
   {
     _id: "app_024",
@@ -501,9 +583,12 @@ export const testApplications = [
     email: "catherine.perrin@email.com",
     city: "Montpellier",
     postalCode: 34001,
+    statusHistory: [
+      { status: "pending", date: "2026-01-18" },
+      { status: "call", date: "2026-01-22" },
+      { status: "HRInterview", date: "2026-01-30" },
+    ],
   },
-
-  // AeroSpace Dynamics (comp_013) - 2 candidatures
   {
     _id: "app_025",
     title: "Ingénieur aéronautique",
@@ -518,6 +603,12 @@ export const testApplications = [
     email: "francois.lemarchand@email.com",
     city: "Toulouse",
     postalCode: 31002,
+    statusHistory: [
+      { status: "pending", date: "2026-01-07" },
+      { status: "call", date: "2026-01-12" },
+      { status: "HRInterview", date: "2026-01-18" },
+      { status: "technicalInterview", date: "2026-01-28" },
+    ],
   },
   {
     _id: "app_026",
@@ -533,9 +624,11 @@ export const testApplications = [
     email: "sabrina.mahmoud@email.com",
     city: "Toulouse",
     postalCode: 31003,
+    statusHistory: [
+      { status: "pending", date: "2026-02-03" },
+      { status: "call", date: "2026-02-05" },
+    ],
   },
-
-  // SmartHome IoT (comp_014) - 2 candidatures
   {
     _id: "app_027",
     title: "Développeur IoT",
@@ -551,6 +644,13 @@ export const testApplications = [
     email: "jean-baptiste.garnier@email.com",
     city: "Grenoble",
     postalCode: 38000,
+    statusHistory: [
+      { status: "pending", date: "2025-09-15" },
+      { status: "HRInterview", date: "2025-09-22" },
+      { status: "call", date: "2025-09-25" },
+      { status: "technicalInterview", date: "2025-10-01" },
+      { status: "accepted", date: "2025-10-15" },
+    ],
   },
   {
     _id: "app_028",
@@ -564,9 +664,12 @@ export const testApplications = [
     email: "sandrine.chauvet@email.com",
     city: "Grenoble",
     postalCode: 38001,
+    statusHistory: [
+      { status: "pending", date: "2026-01-06" },
+      { status: "call", date: "2026-01-28" },
+      { status: "refused", date: "2026-01-28" },
+    ],
   },
-
-  // EduTech Learning (comp_015) - 2 candidatures
   {
     _id: "app_029",
     title: "Développeur pédagogique",
@@ -578,5 +681,6 @@ export const testApplications = [
     email: "laurent.dumas@email.com",
     city: "Nancy",
     postalCode: 54000,
+    statusHistory: [{ status: "pending", date: "2026-02-07" }],
   },
 ];
