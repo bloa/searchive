@@ -11,7 +11,8 @@ export interface Application {
     | "HRInterview"
     | "technicalInterview"
     | "accepted"
-    | "refused";
+    | "refused"
+    | "abandoned";
   offerSource:
     | "Connaissance"
     | "EnPhysique"
