@@ -67,6 +67,7 @@
         :application="app"
         @click="goToDetail"
         @edit="openStatusModal(app._id as string)"
+        @delete="handleDelete(app._id as string)"
       />
     </div>
     <div v-else class="text-center py-12 text-gray-500">
@@ -86,7 +87,6 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
 import { useApplicationStore } from "../store/application";
 import { useCompanyStore } from "../store/company";
 import { APPLICATION_STATUSES } from "../data/applicationStatus";
@@ -94,7 +94,6 @@ import ApplicationCard from "../components/Application.vue";
 import StatusUpdateModal from "../components/StatusUpdateModal.vue";
 import type { Application } from "../interfaces/Application"; // Nécessaire pour l'assertion de type
 
-const router = useRouter();
 const appStore = useApplicationStore();
 const companyStore = useCompanyStore();
 
@@ -156,4 +155,7 @@ function handleStatusUpdate(newStatus: string, date: string) {
     selectedApplicationId.value = null;
   }
 }
+const handleDelete = async (id: string) => {
+  appStore.deleteApplication(id);
+};
 </script>
