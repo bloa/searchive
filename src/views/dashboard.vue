@@ -13,33 +13,71 @@
             Vue d'ensemble de votre recherche de stage
           </p>
         </div>
-        <!--links-->
-        <div class="flex gap-2">
-          <router-link
-            to="/createApplication"
-            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!--buttons-->
+        <div class="flex flex-col items-end gap-2">
+          <!--links-->
+          <div class="flex gap-2">
+            <router-link
+              to="/createApplication"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Nouvelle candidature
-          </router-link>
-          <router-link
-            to="/statistics"
-            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-          >
-            📊 Statistiques
-          </router-link>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Nouvelle candidature
+            </router-link>
+            <router-link
+              to="/statistics"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              Statistiques
+            </router-link>
+          </div>
+          <!--export-->
+          <div>
+            <button
+              @click="showExportModal = true"
+              class="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              Exporter
+            </button>
+          </div>
         </div>
       </div>
 
@@ -96,23 +134,28 @@
         </div>
       </template>
     </div>
+
+    <!-- Export Modal -->
+    <ExportModal
+      v-model:is-open="showExportModal"
+      :applications="applicationsData"
+      @close="showExportModal = false"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import type { Application } from "../interfaces/Application"; // Make sure path is correct
-import { useApplicationStore } from "../store/application"; // Make sure path is correct
-import StatCard from "../components/StatCard.vue"; // Create this component
-import LineChart from "../components/LineChart.vue"; // Create this component
-import SankeyDiagram from "../components/SankeyDiagram.vue"; // Create this component
+import type { Application } from "../interfaces/Application";
+import { useApplicationStore } from "../store/application";
+import StatCard from "../components/StatCard.vue";
 import ApplicationCard from "../components/Application.vue";
+import ExportModal from "../components/ExportModal.vue";
 
 // ✅ Store
 const applicationStore = useApplicationStore();
-const router = useRouter();
 const loading = ref(true);
+const showExportModal = ref(false);
 
 // ✅ Données des applications
 const applicationsData = computed(() => {
@@ -202,8 +245,7 @@ const stats = computed(() => {
 const loadData = () => {
   loading.value = true;
   try {
-    // Fetch applications from store
-    applicationStore.applications; // Make sure this method exists
+    applicationStore.applications;
   } catch (error) {
     console.error("❌ Erreur:", error);
   } finally {
