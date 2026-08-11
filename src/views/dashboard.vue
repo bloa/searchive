@@ -13,31 +13,34 @@
             Vue d'ensemble de votre recherche de stage
           </p>
         </div>
-        <router-link
-          to="/createApplication"
-          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
-        >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <!--links-->
+        <div class="flex gap-2">
+          <router-link
+            to="/createApplication"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          Nouvelle candidature
-        </router-link>
-        <router-link
-          to="/statistics"
-          class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-        >
-          📊 Statistiques
-        </router-link>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Nouvelle candidature
+          </router-link>
+          <router-link
+            to="/statistics"
+            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+          >
+            📊 Statistiques
+          </router-link>
+        </div>
       </div>
 
       <!-- ✅ État de chargement -->
@@ -61,35 +64,6 @@
             :color="stat.color"
             :trend="stat.trend"
           />
-        </div>
-
-        <!-- Graphique d'évolution -->
-        <div
-          class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-medium text-gray-700">
-              Évolution des candidatures
-            </h3>
-            <span class="text-xs text-gray-400"
-              >{{ applicationsData.length }} candidatures</span
-            >
-          </div>
-          <div class="h-72 w-full">
-            <LineChart :applications="applicationsData" />
-          </div>
-        </div>
-
-        <!-- Sankey Diagram -->
-        <div
-          class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8"
-        >
-          <h3 class="text-sm font-medium text-gray-700 mb-4">
-            Flux des candidatures
-          </h3>
-          <div class="h-64 w-full">
-            <SankeyDiagram :applications="applicationsData" />
-          </div>
         </div>
 
         <!-- Dernières candidatures -->
