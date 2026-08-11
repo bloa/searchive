@@ -14,7 +14,7 @@
           </p>
         </div>
         <!--buttons-->
-        <div class="flex flex-col items-end gap-2">
+        <div class="flex sm:flex-row flex-col items-end gap-2">
           <!--links-->
           <div class="flex gap-2">
             <router-link
@@ -60,7 +60,7 @@
           <div>
             <button
               @click="showExportModal = true"
-              class="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-sm hover:shadow-md"
+              class="inline-flex cursor-pointer h-full items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <svg
                 class="w-4 h-4"
