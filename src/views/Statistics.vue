@@ -35,11 +35,14 @@
       <GanttChart />
     </div>
 
-    <!-- Flux Sankey (optionnel, décommentez si implémenté) -->
-    <!-- <div class="mt-8 bg-white p-4 rounded-xl shadow">
-      <h2 class="text-lg font-semibold mb-4">Flux des candidatures (Sankey)</h2>
-      <SankeyFlow :nodes="sankeyFlowData.nodes" :links="sankeyFlowData.links" />
-    </div> -->
+    <!-- Nouveau : Diagramme de Sankey (flux) -->
+    <!-- Flux des candidatures (Sankey) -->
+    <div class="mt-8 bg-white p-4 rounded-xl shadow">
+      <h2 class="text-lg font-semibold mb-4">
+        🔀 Flux des candidatures (Sankey)
+      </h2>
+      <SankeyFlowChart :links="sankeyLinks" />
+    </div>
   </div>
 </template>
 
@@ -50,8 +53,8 @@ import SankeyDiagram from "../components/SankeyDiagram.vue";
 import LineChart from "../components/LineChart.vue";
 import StatCard from "../components/StatCard.vue";
 import GanttChart from "../components/GanttChart.vue";
-// import SankeyFlow from "../components/SankeyFlow.vue"; // Décommentez si SankeyFlow est prêt
-// import { useSankeyFlowData } from "../composables/useSankeyFlowData";
+import SankeyFlowChart from "../components/SankeyFlowChart.vue";
+import { useSankeyFlowData } from "../utils/useSankeyFlowData";
 import type { Application } from "../interfaces/Application";
 
 const appStore = useApplicationStore();
@@ -123,6 +126,6 @@ const stats = computed(() => {
   ];
 });
 
-// Données pour le Sankey flow (décommentez quand le composable est prêt)
-// const { sankeyData: sankeyFlowData } = useSankeyFlowData();
+// Données pour le diagramme de Sankey (flux)
+const { sankeyLinks } = useSankeyFlowData();
 </script>
