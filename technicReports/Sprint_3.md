@@ -32,13 +32,7 @@ Le Sprint 3 avait pour objectifs de :
   - Ajout d’un BOM pour Excel.
 - **Téléchargement** : création d’un blob, lien temporaire, clic programmatique, révocation de l’URL.
 
-#### **2.3 Diagramme de Sankey (`SankeyFlowChart.vue`)**
-
-- **Données** : calculées dans `src/utils/useSankeyFlowData.ts` à partir de `statusHistory`. Les transitions consécutives entre statuts sont comptées (`from`, `to`, `flow`).
-- **Composant** : `chart.js` et le plugin `chartjs-chart-sankey`. Les nœuds sont générés automatiquement par le plugin.
-- **Intégration** : ajouté dans la page `Statistics.vue`, sous le Gantt, avec un titre explicite.
-
-#### **2.4 Corrections et améliorations**
+#### **2.3 Corrections et améliorations**
 
 - **Responsive du Dashboard** : ajustements des classes Tailwind pour un affichage correct sur mobile.
 - **Nettoyage** : suppression de logs inutiles, harmonisation des imports.
@@ -48,7 +42,6 @@ Le Sprint 3 avait pour objectifs de :
 
 - **Tableau de bord** : réutilisation des composants existants (`StatCard`, `ApplicationCard`).
 - **Export** : pas de librairie externe supplémentaire ; utilisation de `Blob` et `URL.createObjectURL` pour le téléchargement. Le format CSV est généré manuellement pour un contrôle total des colonnes.
-- **Sankey** : plugin `chartjs-chart-sankey` (version compatible avec Chart.js 4).
 
 ### **4\. Répartition des tâches**
 
@@ -62,17 +55,12 @@ Le Sprint 3 avait pour objectifs de :
 
 ### **5\. Problèmes rencontrés et solutions**
 
-#### **5.1 Compatibilité du plugin Sankey avec Chart.js 4**
-
-- **Problème** : erreurs `node is undefined` et `this.options is undefined` lors de l’initialisation. Le plugin attendait des champs `from`, `to`, `flow` alors que nous fournissions `source`, `target`, `value` ; de plus, passer un tableau `nodes` explicite créait des conflits.
-- **Solution** : reformatage des liens (`from`, `to`, `flow`), suppression des nœuds explicites, correction des imports (`Chart` depuis `chart.js`). Le typage de la configuration a été assoupli (`any`) pour contourner des définitions incomplètes.
-
-#### **5.2 Responsive du Dashboard**
+#### **5.1 Responsive du Dashboard**
 
 - **Problème** : sur petits écrans, les boutons étaient trop larges ou mal alignés.
 - **Solution** : utilisation de classes conditionnelles (`flex-col` par défaut, `sm:flex-row` au-delà du point de rupture), et ajustement de la hauteur du bouton d’export.
 
-#### **5.3 Cohérence des données de test**
+#### **5.2 Cohérence des données de test**
 
 - **Problème** : les données générées par `fillTestData()` ne contenaient pas toujours `statusHistory`, ce qui rendait le Sankey et le Gantt vides.
 - **Solution** : ajout manuel de `statusHistory` dans `testData.ts` pour chaque candidature (29 entrées), et maintien de `fillTestData()` qui ne remplit que si `localStorage` est vide.
@@ -80,7 +68,7 @@ Le Sprint 3 avait pour objectifs de :
 ### **6\. Livrables du Sprint 3**
 
 - Code source mis à jour sur la branche `sprint-3`.
-- Nouveaux composants : `Dashboard.vue`, `ExportModal.vue`, `SankeyFlowChart.vue`, `useSankeyFlowData.ts`.
+- Nouveaux composants : `Dashboard.vue`, `ExportModal.vue`
 - Guide utilisateur (`GUIDE_UTILISATEUR.md`).
 - Rapport technique.
 
