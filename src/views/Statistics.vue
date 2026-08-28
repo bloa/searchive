@@ -1,7 +1,14 @@
 <template>
   <div class="container mx-auto max-w-6xl px-4 py-8">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">📊 Statistiques</h1>
-
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">📊 Statistiques</h1>
+      <router-link
+        to="/"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+      >
+        ← Retour
+      </router-link>
+    </div>
     <!-- Cartes statistiques -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
       <StatCard
