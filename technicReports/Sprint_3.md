@@ -52,13 +52,13 @@ Le Sprint 3 avait pour objectifs de :
 
 ### **4\. Répartition des tâches**
 
-| Tâche                                                 | Responsable |
-| ----------------------------------------------------- | ----------- |
-| Dashboard (`dashboard.vue`) et intégration des cartes | Yaser       |
-| ExportModal (`ExportModal.vue`) – logique JSON/CSV    | Binôme      |
-| Correction responsive et tests                        | Binôme      |
-| Guide d’utilisation (`GUIDE_UTILISATEUR.md`)          | Yuwen       |
-| Rapport technique final                               | Binôme      |
+| Tâche                                                     | Responsable | Période        |
+| --------------------------------------------------------- | ----------- | -------------- |
+| **Dashboard (`dashboard.vue`) et intégration des cartes** | **Yaser**   | **11 août**    |
+| **ExportModal (`ExportModal.vue`) – logique JSON/CSV**    | **Binôme**  | **11 août**    |
+| **Correction responsive et tests**                        | **Binôme**  | **11–13 août** |
+| **Guide d’utilisation (`GUIDE_UTILISATEUR.md`)**          | **Yuwen**   | **13 août -**  |
+| **Rapport technique final**                               | **Binôme**  | **13 août -**  |
 
 ### **5\. Problèmes rencontrés et solutions**
 
