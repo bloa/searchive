@@ -13,9 +13,8 @@
             Vue d'ensemble de votre recherche de stage
           </p>
         </div>
-        <!--buttons-->
+        <!-- Boutons d'action -->
         <div class="flex sm:flex-row flex-col items-end gap-2">
-          <!--links-->
           <div class="flex gap-2">
             <router-link
               to="/createApplication"
@@ -56,7 +55,6 @@
               Statistiques
             </router-link>
           </div>
-          <!--export-->
           <div>
             <button
               @click="showExportModal = true"
@@ -81,7 +79,7 @@
         </div>
       </div>
 
-      <!-- ✅ État de chargement -->
+      <!-- État de chargement -->
       <div v-if="loading" class="text-center py-12">
         <div
           class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"
@@ -89,7 +87,7 @@
         <p class="mt-2 text-gray-500">Chargement des données...</p>
       </div>
 
-      <!-- ✅ Contenu -->
+      <!-- Contenu principal -->
       <template v-else>
         <!-- Statistiques -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
@@ -125,6 +123,8 @@
               v-for="item in recentApplications"
               :key="item._id"
               :application="item"
+              @edit="openStatusModal(item._id as string)"
+              @delete="applicationStore.deleteApplication(item._id as string)"
               class="transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
             />
           </div>
@@ -135,34 +135,49 @@
       </template>
     </div>
 
-    <!-- Export Modal -->
+    <!-- Modale d'export -->
     <ExportModal
       v-model:is-open="showExportModal"
       :applications="applicationsData"
       @close="showExportModal = false"
     />
+
+    <!-- Modale de modification de statut -->
+    <StatusUpdateModal
+      :visible="statusModalVisible"
+      :currentStatus="selectedApplication?.status ?? 'pending'"
+      @close="statusModalVisible = false"
+      @confirm="handleStatusUpdate"
+    />
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import StatCard from "../components/StatCard.vue";
 import ApplicationCard from "../components/Application.vue";
 import ExportModal from "../components/ExportModal.vue";
+import StatusUpdateModal from "../components/StatusUpdateModal.vue";
 
-// ✅ Store
+// Store
 const applicationStore = useApplicationStore();
+
+// États d'affichage
 const loading = ref(true);
 const showExportModal = ref(false);
 
-// ✅ Données des applications
+// Gestion de la modale de modification de statut
+const statusModalVisible = ref(false);
+const selectedApplicationId = ref<string | null>(null);
+
+// Données des applications
 const applicationsData = computed(() => {
   return applicationStore.applications || [];
 });
 
-// ✅ 3 plus récentes
+// Les 3 candidatures les plus récentes
 const recentApplications = computed(() => {
   const data = applicationsData.value;
   if (!data.length) return [];
@@ -175,7 +190,7 @@ const recentApplications = computed(() => {
     .slice(0, 3);
 });
 
-// ✅ Statistiques
+// Statistiques
 const stats = computed(() => {
   const data = applicationsData.value;
   const total = data.length;
@@ -241,13 +256,39 @@ const stats = computed(() => {
   ];
 });
 
-// ✅ Chargement
+// Application sélectionnée pour la modification
+const selectedApplication = computed(() => {
+  if (!selectedApplicationId.value) return null;
+  return applicationStore.getApplicationById(selectedApplicationId.value);
+});
+
+// Ouvrir la modale de modification
+function openStatusModal(id: string) {
+  selectedApplicationId.value = id;
+  statusModalVisible.value = true;
+}
+
+// Gérer la mise à jour du statut
+function handleStatusUpdate(newStatus: string, date: string) {
+  if (selectedApplicationId.value) {
+    applicationStore.updateStatus(
+      selectedApplicationId.value,
+      newStatus as Application["status"],
+      date,
+    );
+    statusModalVisible.value = false;
+    selectedApplicationId.value = null;
+  }
+}
+
+// Chargement initial
 const loadData = () => {
   loading.value = true;
   try {
+    // Le simple accès aux données suffit à déclencher la réactivité
     applicationStore.applications;
   } catch (error) {
-    console.error("❌ Erreur:", error);
+    console.error("Erreur de chargement:", error);
   } finally {
     loading.value = false;
   }
