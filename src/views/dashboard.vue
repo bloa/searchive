@@ -13,9 +13,75 @@
             Vue d'ensemble de votre recherche de stage
           </p>
         </div>
+        <<<<<<< HEAD =======
+        <!-- Boutons d'action -->
+        <div class="flex sm:flex-row flex-col items-end gap-2">
+          <div class="flex gap-2">
+            <router-link
+              to="/createApplication"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Nouvelle candidature
+            </router-link>
+            <router-link
+              to="/statistics"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              Statistiques
+            </router-link>
+          </div>
+          <div>
+            <button
+              @click="showExportModal = true"
+              class="inline-flex cursor-pointer h-full items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              Exporter
+            </button>
+          </div>
+        </div>
+        >>>>>>> b2dedc06333e909275e36b54b3157e34cc2aed3a
       </div>
 
-      <!-- ✅ État de chargement -->
+      <!-- État de chargement -->
       <div v-if="loading" class="text-center py-12">
         <div
           class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"
@@ -23,7 +89,7 @@
         <p class="mt-2 text-gray-500">Chargement des données...</p>
       </div>
 
-      <!-- ✅ Contenu -->
+      <!-- Contenu principal -->
       <template v-else>
         <!-- Statistiques -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
@@ -53,6 +119,8 @@
               v-for="item in recentApplications"
               :key="item._id"
               :application="item"
+              @edit="openStatusModal(item._id as string)"
+              @delete="applicationStore.deleteApplication(item._id as string)"
               class="transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
             />
           </div>
@@ -70,26 +138,51 @@
       @close="statusModalVisible = false"
       @confirm="handleStatusUpdate"
     />
+    <!-- Modale d'export -->
+    <ExportModal
+      v-model:is-open="showExportModal"
+      :applications="applicationsData"
+      @close="showExportModal = false"
+    />
+
+    <!-- Modale de modification de statut -->
+    <StatusUpdateModal
+      :visible="statusModalVisible"
+      :currentStatus="selectedApplication?.status ?? 'pending'"
+      @close="statusModalVisible = false"
+      @confirm="handleStatusUpdate"
+    />
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import StatCard from "../components/StatCard.vue";
 import ApplicationCard from "../components/Application.vue";
+<<<<<<< HEAD
+=======
+import ExportModal from "../components/ExportModal.vue";
+import StatusUpdateModal from "../components/StatusUpdateModal.vue";
+>>>>>>> b2dedc06333e909275e36b54b3157e34cc2aed3a
 
-// ✅ Store
+// Store
 const applicationStore = useApplicationStore();
+
+// États d'affichage
 const loading = ref(true);
 
-// ✅ Données des applications
+// Gestion de la modale de modification de statut
+const statusModalVisible = ref(false);
+const selectedApplicationId = ref<string | null>(null);
+
+// Données des applications
 const applicationsData = computed(() => {
   return applicationStore.applications || [];
 });
 
-// ✅ 3 plus récentes
+// Les 3 candidatures les plus récentes
 const recentApplications = computed(() => {
   const data = applicationsData.value;
   if (!data.length) return [];
@@ -102,7 +195,7 @@ const recentApplications = computed(() => {
     .slice(0, 3);
 });
 
-// ✅ Statistiques
+// Statistiques
 const stats = computed(() => {
   const data = applicationsData.value;
   const total = data.length;
@@ -168,13 +261,39 @@ const stats = computed(() => {
   ];
 });
 
-// ✅ Chargement
+// Application sélectionnée pour la modification
+const selectedApplication = computed(() => {
+  if (!selectedApplicationId.value) return null;
+  return applicationStore.getApplicationById(selectedApplicationId.value);
+});
+
+// Ouvrir la modale de modification
+function openStatusModal(id: string) {
+  selectedApplicationId.value = id;
+  statusModalVisible.value = true;
+}
+
+// Gérer la mise à jour du statut
+function handleStatusUpdate(newStatus: string, date: string) {
+  if (selectedApplicationId.value) {
+    applicationStore.updateStatus(
+      selectedApplicationId.value,
+      newStatus as Application["status"],
+      date,
+    );
+    statusModalVisible.value = false;
+    selectedApplicationId.value = null;
+  }
+}
+
+// Chargement initial
 const loadData = () => {
   loading.value = true;
   try {
+    // Le simple accès aux données suffit à déclencher la réactivité
     applicationStore.applications;
   } catch (error) {
-    console.error("❌ Erreur:", error);
+    console.error("Erreur de chargement:", error);
   } finally {
     loading.value = false;
   }

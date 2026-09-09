@@ -1,7 +1,29 @@
 <template>
   <div class="container mx-auto max-w-5xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">📋 Mes candidatures</h1>
+      <div class="flex items-center gap-3">
+        <router-link
+          to="/"
+          class="inline-flex items-center text-gray-600 hover:text-gray-800 transition"
+          title="Retour au tableau de bord"
+        >
+          <svg
+            class="w-5 h-5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Retour
+        </router-link>
+        <h1 class="text-2xl font-bold text-gray-800">📋 Mes candidatures</h1>
+      </div>
       <div class="flex gap-2">
         <router-link
           to="/createApplication"
