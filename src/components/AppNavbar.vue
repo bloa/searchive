@@ -38,6 +38,21 @@
 
         <!-- Actions -->
         <div class="flex items-center gap-2">
+          <router-link
+            to="/createApplication"
+            class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-md sm:inline-flex"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Nouvelle candidature
+          </router-link>
+
           <button
             type="button"
             @click="showExportModal = true"
@@ -53,21 +68,6 @@
             </svg>
             Exporter
           </button>
-
-          <router-link
-            to="/createApplication"
-            class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-md sm:inline-flex"
-          >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Nouvelle candidature
-          </router-link>
 
           <!-- Bouton menu (mobile) -->
           <button
