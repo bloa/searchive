@@ -161,11 +161,8 @@ import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import StatCard from "../components/StatCard.vue";
 import ApplicationCard from "../components/Application.vue";
-<<<<<<< HEAD
-=======
 import ExportModal from "../components/ExportModal.vue";
 import StatusUpdateModal from "../components/StatusUpdateModal.vue";
->>>>>>> b2dedc06333e909275e36b54b3157e34cc2aed3a
 
 // Store
 const applicationStore = useApplicationStore();
@@ -176,6 +173,9 @@ const loading = ref(true);
 // Gestion de la modale de modification de statut
 const statusModalVisible = ref(false);
 const selectedApplicationId = ref<string | null>(null);
+
+// Gestion de la modale d'export
+const showExportModal = ref(false);
 
 // Données des applications
 const applicationsData = computed(() => {
