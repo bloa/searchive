@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref, reactive } from "vue";
+import { v4 as uuidv4 } from "uuid";
 import { useLocalStorage } from "./localStorage";
 import type { Company } from "../interfaces/Company";
-import { generateId } from "../utils/generatingIDs";
 
 export const useCompanyStore = defineStore("companyStore", () => {
   const storage = useLocalStorage();
@@ -24,7 +24,7 @@ export const useCompanyStore = defineStore("companyStore", () => {
   function createCompany(data: Company): Company | null {
     const newCompany: Company = {
       ...data,
-      _id: generateId(),
+      _id: uuidv4(),
     };
     companies.value.push(newCompany);
     save();

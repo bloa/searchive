@@ -11,11 +11,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import AppNavbar from "./components/AppNavbar.vue";
-import { useLocalStorage } from "./store/localStorage";
 
 const route = useRoute();
 const hideNav = computed(() => route.meta.hideNav === true);
-
-// Pas besoin d'import supplémentaire
-// useLocalStorage().fillTestData();
 </script>

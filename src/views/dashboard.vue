@@ -13,7 +13,6 @@
             Vue d'ensemble de votre recherche de stage
           </p>
         </div>
-        <<<<<<< HEAD =======
         <!-- Boutons d'action -->
         <div class="flex sm:flex-row flex-col items-end gap-2">
           <div class="flex gap-2">
@@ -78,7 +77,6 @@
             </button>
           </div>
         </div>
-        >>>>>>> b2dedc06333e909275e36b54b3157e34cc2aed3a
       </div>
 
       <!-- État de chargement -->

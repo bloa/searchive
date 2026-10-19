@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, reactive, computed } from "vue";
+import { v4 as uuidv4 } from "uuid";
 import type { Application } from "../interfaces/Application";
-import { generateId } from "../utils/generatingIDs";
 import { useLocalStorage } from "./localStorage";
 
 export const useApplicationStore = defineStore("applicationStore", () => {
@@ -41,7 +41,7 @@ export const useApplicationStore = defineStore("applicationStore", () => {
   }
 
   function create(app: Application): Application {
-    const newApp = { ...app, _id: generateId() };
+    const newApp = { ...app, _id: uuidv4() };
     applications.value.push(newApp);
     save();
     return newApp;
