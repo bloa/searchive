@@ -2,6 +2,8 @@
 
 ## Suivi et analyse de recherche de stage
 
+Application en ligne : https://bloa.github.io/searchive/
+
 Searchive est une application web destinée aux étudiants qui souhaitent centraliser et suivre leurs recherches de stage.
 Elle permet d'enregistrer leurs démarches, de suivre l'évolution de leurs candidatures et de visualiser des statistiques sur leur recherche.
 L'objectif est aussi de faciliter l'accompagnement des étudiants en permettant de faire remonter des données agrégées permettant de mieux comprendre les dynamiques de recherche de stage au sein des promotions.
