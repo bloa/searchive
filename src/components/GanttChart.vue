@@ -10,12 +10,8 @@
         <div class="gantt-header">
           <div class="gantt-label-header">Candidature</div>
           <div class="gantt-timeline-header">
-            <div
-              v-for="tick in dateTicks"
-              :key="tick.label + '-' + tick.left"
-              class="gantt-tick"
-              :style="{ left: tick.left + 'px' }"
-            >
+            <div v-for="tick in dateTicks" :key="tick.label + '-' + tick.left" class="gantt-tick"
+              :style="{ left: tick.left + 'px' }">
               <span class="tick-label">{{ tick.label }}</span>
               <span class="tick-line"></span>
             </div>
@@ -26,17 +22,11 @@
         <div v-for="item in ganttData" :key="item.id" class="gantt-row">
           <div class="gantt-label">{{ item.title }}</div>
           <div class="gantt-timeline">
-            <div
-              v-for="(segment, idx) in item.segments"
-              :key="idx"
-              class="gantt-segment"
-              :style="{
-                left: segment.left + 'px',
-                width: segment.width + 'px',
-                backgroundColor: segment.color,
-              }"
-              :title="`${segment.status} (${segment.start} → ${segment.end})`"
-            >
+            <div v-for="(segment, idx) in item.segments" :key="idx" class="gantt-segment" :style="{
+              left: segment.left + 'px',
+              width: segment.width + 'px',
+              backgroundColor: segment.color,
+            }" :title="`${segment.status} (${segment.start} → ${segment.end})`">
               <span class="segment-label" v-if="segment.width > 40">
                 {{ segment.status }}
               </span>

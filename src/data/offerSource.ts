@@ -1,5 +1,3 @@
-// constants/offerSources.ts
-
 export const OFFER_SOURCES = [
   { value: "Connaissance", label: "🤝 Connaissance personnelle" },
   { value: "EnPhysique", label: "📋 Candidature physique" },

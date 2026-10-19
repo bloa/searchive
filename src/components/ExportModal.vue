@@ -1,33 +1,15 @@
 <template>
-  <div
-    v-if="isOpen"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    @click.self="closeModal"
-  >
-    <div
-      class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-100"
-    >
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    @click.self="closeModal">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-100">
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-semibold text-gray-900">
           Exporter les candidatures
         </h3>
-        <button
-          @click="closeModal"
-          class="p-1 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <svg
-            class="w-5 h-5 text-gray-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
+        <button @click="closeModal" class="p-1 hover:bg-gray-100 rounded-lg transition-colors">
+          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -39,14 +21,10 @@
 
       <!-- Options -->
       <div class="space-y-3">
-        <button
-          @click="exportJSON"
-          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-400 group"
-        >
+        <button @click="exportJSON"
+          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-400 group">
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            >
+            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
               JSON
             </div>
             <div class="text-left">
@@ -56,29 +34,18 @@
               </p>
             </div>
           </div>
-          <svg
-            class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </button>
 
-        <button
-          @click="exportCSV"
-          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-green-400 group"
-        >
+        <button @click="exportCSV"
+          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-green-400 group">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            >
+              class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
               CSV
             </div>
             <div class="text-left">
@@ -86,28 +53,18 @@
               <p class="text-xs text-gray-500">Tableau compatible Excel</p>
             </div>
           </div>
-          <svg
-            class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </button>
       </div>
 
       <!-- Footer -->
       <div class="mt-6 pt-4 border-t border-gray-100">
-        <button
-          @click="closeModal"
-          class="w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer hover:bg-gray-100"
-        >
+        <button @click="closeModal"
+          class="w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer hover:bg-gray-100">
           Annuler
         </button>
       </div>

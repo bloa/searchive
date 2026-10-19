@@ -1,8 +1,6 @@
 <template>
-  <div id="app" class="min-h-screen">
-    <!-- Barre de navigation globale (masquée sur les écrans de formulaire) -->
+  <div id="app" class="min-h-screen bg-blue-50">
     <AppNavbar v-if="!hideNav" />
-    <!-- Zone d'affichage des pages -->
     <router-view />
   </div>
 </template>

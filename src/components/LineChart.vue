@@ -1,47 +1,25 @@
 <template>
   <div class="w-full h-80">
     <div class="flex justify-end gap-2 mb-2">
-      <button
-        @click="setMode('cumulative')"
-        class="px-2 py-0.5 text-xs rounded transition-all duration-200"
-        :class="
-          mode === 'cumulative'
-            ? 'bg-blue-500 text-white shadow-sm'
-            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-        "
-      >
+      <button @click="setMode('cumulative')" class="px-2 py-0.5 text-xs rounded transition-all duration-200" :class="mode === 'cumulative'
+          ? 'bg-blue-500 text-white shadow-sm'
+          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+        ">
         Cumulé
       </button>
-      <button
-        @click="setMode('monthly')"
-        class="px-2 py-0.5 text-xs rounded transition-all duration-200"
-        :class="
-          mode === 'monthly'
-            ? 'bg-blue-500 text-white shadow-sm'
-            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-        "
-      >
+      <button @click="setMode('monthly')" class="px-2 py-0.5 text-xs rounded transition-all duration-200" :class="mode === 'monthly'
+          ? 'bg-blue-500 text-white shadow-sm'
+          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+        ">
         Par mois
       </button>
     </div>
 
-    <div
-      v-if="!hasData"
-      class="flex items-center justify-center h-full text-gray-400"
-    >
+    <div v-if="!hasData" class="flex items-center justify-center h-full text-gray-400">
       <div class="text-center">
-        <svg
-          class="w-12 h-12 mx-auto mb-2 text-gray-300"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
+        <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
         <p>Aucune donnée à afficher</p>
         <p class="text-xs text-gray-400">
