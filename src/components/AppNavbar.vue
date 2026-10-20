@@ -20,6 +20,7 @@
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors" :class="isActive(link.to)
               ? 'bg-blue-50 text-blue-700'
               : 'text-gray-600 hover:bg-gray-100'" :aria-current="isActive(link.to) ? 'page' : undefined">
+            <font-awesome-icon :icon="link.icon" />
             {{ link.label }}
           </router-link>
         </div>
@@ -41,6 +42,7 @@
           :class="isActive(link.to)
             ? 'bg-blue-50 text-blue-700'
             : 'text-gray-600 hover:bg-gray-100'" :aria-current="isActive(link.to) ? 'page' : undefined">
+          <font-awesome-icon :icon="link.icon" />
           {{ link.label }}
         </router-link>
       </div>
@@ -52,14 +54,16 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faChartLine, faClipboardList, faList } from "@fortawesome/free-solid-svg-icons";
 
 const route = useRoute();
 const open = ref(false);
 
 const links = [
-  { to: "/", label: "Dashboard" },
-  { to: "/applications", label: "Candidatures" },
-  { to: "/statistics", label: "Statistiques" },
+  { to: "/", label: "Dashboard", icon: faClipboardList },
+  { to: "/applications", label: "Candidatures", icon: faList },
+  { to: "/statistics", label: "Statistiques", icon: faChartLine },
 ];
 
 const isActive = (to: string) => {

@@ -2,21 +2,16 @@
   <div class="container mx-auto max-w-5xl px-4 py-8">
     <!-- En-tête -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-      <h1>🗂️ Mes candidatures</h1>
+      <h1>📑 Mes candidatures</h1>
       <div class="flex items-end gap-2">
         <router-link to="/createApplication"
           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
+          <FontAwesomeIcon :icon="faPlus" />
           Nouvelle candidature
         </router-link>
         <button @click="showExportModal = true"
           class="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+          <FontAwesomeIcon :icon="faDownload" />
           Exporter
         </button>
       </div>
@@ -61,6 +56,8 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faDownload, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useApplicationStore } from "../store/application";
 import { useCompanyStore } from "../store/company";
 import { APPLICATION_STATUSES } from "../data/applicationStatus";

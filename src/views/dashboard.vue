@@ -6,9 +6,7 @@
       <div class="flex items-end gap-2">
         <router-link to="/createApplication"
           class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
+          <FontAwesomeIcon :icon="faPlus" />
           Nouvelle candidature
         </router-link>
       </div>
@@ -23,8 +21,8 @@
     <!-- Contenu principal -->
     <template v-else>
       <!-- Statistiques -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-        <StatCard v-for="stat in stats" :label="stat.label" :value="stat.value" :icon="stat.icon" />
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <StatCard v-for="stat in stats" :label="stat.label" :value="stat.value" :icon="stat.icon" :color="stat.color"/>
       </div>
 
       <!-- Dernières candidatures -->
@@ -51,6 +49,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faCommentDots,
+  faCircleXmark,
+  faTrashCan,
+  faClock,
+} from "@fortawesome/free-regular-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import type { Application } from "../interfaces/Application";
 import { useApplicationStore } from "../store/application";
 import StatCard from "../components/StatCard.vue";
@@ -96,30 +102,29 @@ const stats = computed(() => {
 
   return [
     {
-      label: "Total",
-      value: data.length,
-      icon: "📊",
-    },
-    {
       label: "En attente",
       value: statusCount.pending || 0,
-      icon: "⏳",
+      icon: faClock,
+      color: "#3B82F6",
     },
     {
-      label: "Entretiens",
+      label: "En cours",
       value:
-        (statusCount.HRInterview || 0) + (statusCount.technicalInterview || 0),
-      icon: "🎯",
+        (statusCount.call || 0) + (statusCount.HRInterview || 0) + (statusCount.technicalInterview || 0),
+      icon: faCommentDots,
+      color: "#16A34A",
     },
     {
-      label: "Acceptées",
-      value: statusCount.accepted || 0,
-      icon: "✅",
-    },
-    {
-      label: "Refusées",
+      label: "Sans suite",
       value: statusCount.refused || 0,
-      icon: "❌",
+      icon: faCircleXmark,
+      color: "#E05252",
+    },
+    {
+      label: "Écartées",
+      value: statusCount.abandoned || 0,
+      icon: faTrashCan,
+      color: "#9333EA",
     },
   ];
 });
