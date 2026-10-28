@@ -1,119 +1,260 @@
 <template>
-  <div class="w-full h-80">
-    <div class="flex justify-end gap-2 mb-2">
-      <button @click="setMode('cumulative')" class="px-2 py-0.5 text-xs rounded transition-all duration-200" :class="mode === 'cumulative'
-          ? 'bg-blue-500 text-white shadow-sm'
-          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-        ">
-        Cumulé
-      </button>
-      <button @click="setMode('monthly')" class="px-2 py-0.5 text-xs rounded transition-all duration-200" :class="mode === 'monthly'
-          ? 'bg-blue-500 text-white shadow-sm'
-          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-        ">
-        Par mois
-      </button>
-    </div>
+  <div v-if="props.applications.length == 0" class="flex items-center justify-center text-sm text-gray-400">
+    Aucune donnée à afficher.
+  </div>
+  <div v-else class="flex w-full h-80 flex-col">
+    <div class="mb-3 flex items-center gap-3">
+      <span class="text-sm text-gray-500">12 dernières semaines</span>
 
-    <div v-if="!hasData" class="flex items-center justify-center h-full text-gray-400">
-      <div class="text-center">
-        <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        <p>Aucune donnée à afficher</p>
-        <p class="text-xs text-gray-400">
-          Ajoutez des candidatures pour voir les statistiques
-        </p>
+      <div class="ml-auto flex flex-wrap gap-2">
+        <div class="flex gap-1 rounded-lg bg-gray-100 p-1">
+          <button v-for="option in [
+            { value: 'statuses', label: 'Statuts' },
+            { value: 'groups', label: 'Groupes' },
+          ]" :key="option.value" @click="displayMode = option.value as typeof displayMode"
+            class="rounded-md px-3 py-1.5 text-xs font-medium transition" :class="displayMode === option.value
+              ? 'bg-white text-blue-600 shadow-sm'
+              : 'text-gray-500 hover:text-gray-800'">
+            {{ option.label }}
+          </button>
+        </div>
+
+        <div class="flex gap-1 rounded-lg bg-gray-100 p-1">
+          <button v-for="option in [
+            { value: 'cumulative', label: 'Cumulé' },
+            { value: 'raw', label: 'Par semaine' },
+          ]" :key="option.value" @click="mode = option.value as typeof mode"
+            class="rounded-md px-3 py-1.5 text-xs font-medium transition" :class="mode === option.value
+              ? 'bg-white text-blue-600 shadow-sm'
+              : 'text-gray-500 hover:text-gray-800'">
+            {{ option.label }}
+          </button>
+        </div>
       </div>
     </div>
-    <canvas v-else ref="chartRef"></canvas>
+
+    <div class="min-h-0 flex-1">
+      <canvas ref="chartRef"></canvas>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick, computed } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import type { Chart as ChartJS } from "chart.js";
+import { APPLICATION_GROUPS } from "../data/applicationGroups";
+import { APPLICATION_STATUSES } from "../data/applicationStatuses";
+import type { Application, ApplicationGroup, ApplicationStatus } from "../interfaces/Application";
 
 const props = defineProps<{
-  applications: any[];
+  applications: Application[];
 }>();
 
-const mode = ref<"cumulative" | "monthly">("cumulative");
+const mode = ref<"raw" | "cumulative">("cumulative");
+const displayMode = ref<"statuses" | "groups">("statuses");
+const chartRef = ref<HTMLCanvasElement | null>(null);
 
-const setMode = (newMode: "cumulative" | "monthly") => {
-  if (mode.value !== newMode) {
-    mode.value = newMode;
-    nextTick(() => {
-      createChart();
-    });
-  }
+const chartCategories = computed(() =>
+  displayMode.value === "statuses"
+    ? APPLICATION_STATUSES
+    : Object.fromEntries(
+      Object.entries(APPLICATION_GROUPS).filter(
+        ([key]) => key !== "total",
+      ),
+    ),
+);
+
+let chartInstance: ChartJS | null = null;
+
+const parseDate = (value: string): Date | null => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+
+  const date = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+  );
+
+  return date.getFullYear() === Number(match[1]) &&
+    date.getMonth() === Number(match[2]) - 1 &&
+    date.getDate() === Number(match[3])
+    ? date
+    : null;
 };
 
-const chartRef = ref<HTMLCanvasElement | null>(null);
-let chartInstance: any = null;
+const getWeekStart = (date: Date): Date => {
+  const result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = result.getDay() || 7;
 
-const hasData = computed(() => {
-  return props.applications && props.applications.length > 0;
+  result.setDate(result.getDate() - day + 1);
+  return result;
+};
+
+const weeks = computed(() => {
+  const currentWeek = getWeekStart(new Date());
+
+  return Array.from({ length: 12 }, (_, index) => {
+    const start = new Date(currentWeek);
+    start.setDate(start.getDate() - (11 - index) * 7);
+
+    return {
+      start,
+      key: start.getTime(),
+      label: `${start.getDate()} ${new Intl.DateTimeFormat("fr-FR", {
+        month: "short",
+      }).format(start)}`,
+      statuses: Object.fromEntries(
+        Object.keys(APPLICATION_STATUSES).map((key) => [key, 0]),
+      ) as Record<ApplicationStatus, number>,
+      groups: Object.fromEntries(
+        Object.keys(APPLICATION_GROUPS).map((key) => [key, 0]),
+      ) as Record<ApplicationGroup, number>,
+      cumulativeGroups: Object.fromEntries(
+        Object.keys(APPLICATION_GROUPS).map((key) => [key, 0]),
+      ) as Record<ApplicationGroup, number>,
+    };
+  });
 });
 
-const chartData = computed(() => {
-  const data = props.applications || [];
+const countedApplications = computed(() => {
+  const data = structuredClone(weeks.value);
+  const firstWeek = data[0].key;
+  const buckets = new Map(data.map((week) => [week.key, week]));
 
-  const months: Record<string, any> = {};
-  const now = new Date();
+  const baseline = {
+    statuses: Object.fromEntries(
+      Object.keys(APPLICATION_STATUSES).map((key) => [key, 0]),
+    ) as Record<ApplicationStatus, number>,
+    groups: Object.fromEntries(
+      Object.keys(APPLICATION_GROUPS).map((key) => [key, 0]),
+    ) as Record<ApplicationGroup, number>,
+  };
 
-  for (let i = 11; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    months[key] = {
-      month: key,
-      label: `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getFullYear()).slice(2)}`,
-      total: 0,
-      accepted: 0,
-    };
+  for (const week of data) {
+    week.cumulativeGroups = Object.fromEntries(
+      Object.keys(APPLICATION_GROUPS).map((key) => [key, 0]),
+    ) as Record<ApplicationGroup, number>;
   }
 
-  data.forEach((app: any) => {
-    if (!app.date) return;
-    const date = new Date(app.date);
-    if (isNaN(date.getTime())) return;
+  for (const app of props.applications) {
+    const events = Object.entries(app.statusDates ?? {})
+      .filter(
+        ([key, value]) =>
+          key in APPLICATION_STATUSES &&
+          typeof value === "string" &&
+          value !== "",
+      )
+      .map(([status, value]) => ({
+        status: status as ApplicationStatus,
+        date: parseDate(value as string),
+      }))
+      .filter(
+        (event): event is { status: ApplicationStatus; date: Date } =>
+          event.date !== null,
+      )
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    const countedGroupsByWeek = new Map<number, Set<ApplicationGroup>>();
+    const seenGroups = new Set<ApplicationGroup>();
 
-    if (months[key]) {
-      months[key].total++;
+    for (const event of events) {
+      const weekKey = getWeekStart(event.date).getTime();
+      const week = buckets.get(weekKey);
+      const isBaseline = weekKey < firstWeek;
 
-      if (app.status === "accepted") {
-        months[key].accepted++;
+      const counts = isBaseline ? baseline : week;
+
+      if (!counts) continue;
+
+      // Count every individual status event.
+      counts.statuses[event.status]++;
+
+      const group = APPLICATION_STATUSES[event.status].group as ApplicationGroup;
+
+      // Count each group once per application per week (raw mode).
+      let weeklyGroups = countedGroupsByWeek.get(weekKey);
+
+      if (!weeklyGroups) {
+        weeklyGroups = new Set();
+        countedGroupsByWeek.set(weekKey, weeklyGroups);
+      }
+
+      if (!weeklyGroups.has(group)) {
+        weeklyGroups.add(group);
+        counts.groups[group]++;
+      }
+
+      // Count each group only once per application across its entire history.
+      if (!seenGroups.has(group)) {
+        seenGroups.add(group);
+
+        if (isBaseline) {
+          baseline.groups[group]++;
+        } else if (week) {
+          week.cumulativeGroups[group]++;
+        }
       }
     }
-  });
-
-  const result = Object.values(months);
-
-  if (mode.value === "cumulative") {
-    let cumulativeTotal = 0;
-    let cumulativeAccepted = 0;
-    return result.map((item: any) => {
-      cumulativeTotal += item.total;
-      cumulativeAccepted += item.accepted;
-      return {
-        ...item,
-        totalCumulative: cumulativeTotal,
-        acceptedCumulative: cumulativeAccepted,
-      };
-    });
-  } else {
-    return result.map((item: any) => ({
-      ...item,
-      totalCumulative: item.total,
-      acceptedCumulative: item.accepted,
-    }));
   }
+
+  return { baseline, weeks: data };
+});
+
+const cumulativeData = computed(() => {
+  const statuses = { ...countedApplications.value.baseline.statuses };
+  const groups = { ...countedApplications.value.baseline.groups };
+
+  return countedApplications.value.weeks.map((week) => {
+    for (const status of Object.keys(statuses) as ApplicationStatus[]) {
+      statuses[status] += week.statuses[status];
+    }
+
+    for (const group of Object.keys(groups) as ApplicationGroup[]) {
+      groups[group] += week.cumulativeGroups[group];
+    }
+
+    return {
+      statuses: { ...statuses },
+      groups: { ...groups },
+    };
+  });
+});
+
+const weeklyData = computed(() => {
+  return countedApplications.value.weeks.map((week, index) => {
+    const cumulative = cumulativeData.value[index];
+
+    const values =
+      displayMode.value === "statuses"
+        ? week.statuses
+        : week.groups;
+
+    const cumulativeValues =
+      displayMode.value === "statuses"
+        ? cumulative.statuses
+        : cumulative.groups;
+
+    return {
+      label: week.label,
+      categories: Object.fromEntries(
+        Object.keys(chartCategories.value).map((key) => [
+          key,
+          mode.value === "raw"
+            ? values[key as keyof typeof values]
+            : cumulativeValues[key as keyof typeof cumulativeValues],
+        ]),
+      ),
+    };
+  });
 });
 
 const createChart = async () => {
-  if (!chartRef.value || !hasData.value) return;
+  if (!chartRef.value || props.applications.length == 0) {
+    chartInstance?.destroy();
+    chartInstance = null;
+    return;
+  }
 
   const {
     Chart,
@@ -124,7 +265,6 @@ const createChart = async () => {
     LineElement,
     Tooltip,
     Legend,
-    Filler,
   } = await import("chart.js");
 
   Chart.register(
@@ -135,105 +275,71 @@ const createChart = async () => {
     LineElement,
     Tooltip,
     Legend,
-    Filler,
   );
 
-  if (chartInstance) {
-    chartInstance.destroy();
-    chartInstance = null;
-  }
+  if (!chartRef.value) return;
 
-  const ctx = chartRef.value.getContext("2d");
-  if (!ctx) return;
+  chartInstance?.destroy();
 
-  const data = chartData.value;
-  if (!data || data.length === 0) return;
+  const data = weeklyData.value;
 
-  const labels = data.map((d) => d.label);
+  const datasets = Object.entries(chartCategories.value).map(
+    ([key, category]) => ({
+      label: category.label,
+      data: data.map((week) => week.categories[key]),
+      borderColor: category.color,
+      backgroundColor: category.color,
+      borderWidth: 2,
+      pointRadius: 3,
+      tension: 0.3,
+    }),
+  );
 
-  const maxTotal = Math.max(...data.map((d) => d.totalCumulative), 1);
-  const maxAccepted = Math.max(...data.map((d) => d.acceptedCumulative), 1);
-  const maxValue = Math.max(maxTotal, maxAccepted);
-  const yMax = Math.ceil((maxValue + 1) / 10) * 10;
-
-  const isCumulative = mode.value === "cumulative";
-  const yLabel = isCumulative ? "Nombre cumulé" : "Nombre par mois";
-
-  chartInstance = new Chart(ctx, {
+  chartInstance = new Chart(chartRef.value, {
     type: "line",
     data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Toutes les candidatures",
-          data: data.map((d) => d.totalCumulative),
-          borderColor: "rgb(59, 130, 246)",
-          backgroundColor: "rgba(59, 130, 246, 0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointBackgroundColor: "rgb(59, 130, 246)",
-          borderWidth: 3,
-        },
-        {
-          label: "Candidatures acceptées",
-          data: data.map((d) => d.acceptedCumulative),
-          borderColor: "rgb(34, 197, 94)",
-          backgroundColor: "rgba(34, 197, 94, 0.1)",
-          fill: true,
-          tension: 0.4,
-          pointRadius: 4,
-          pointBackgroundColor: "rgb(34, 197, 94)",
-          borderWidth: 3,
-        },
-      ],
+      labels: data.map((week) => week.label),
+      datasets,
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
       plugins: {
         legend: {
-          display: true,
-          position: "top",
+          position: "bottom",
           labels: {
-            font: {
-              size: 12,
-              weight: "bold", // ✅ Correction: 'bold' au lieu de '500'
-            },
-            boxWidth: 16,
-            padding: 16,
             usePointStyle: true,
             pointStyle: "circle",
+            boxWidth: 8,
+            padding: 14,
+            font: { size: 11 },
           },
         },
         tooltip: {
           callbacks: {
-            label: function (context: any) {
-              return `${context.dataset.label}: ${context.raw}`;
-            },
+            label: (context) =>
+              `${context.dataset.label}: ${context.raw}`,
           },
         },
       },
       scales: {
         y: {
           beginAtZero: true,
-          max: yMax > 0 ? yMax : 10,
           ticks: {
-            stepSize: Math.max(1, Math.floor(yMax / 10)),
-            font: {
-              size: 10,
-            },
-          },
-          grid: {
-            color: "rgba(0,0,0,0.06)",
+            precision: 0,
           },
           title: {
             display: true,
-            text: yLabel,
-            font: {
-              size: 11,
-              weight: "bold", // ✅ Correction: 'bold' au lieu de '500'
-            },
+            text: mode.value === "raw"
+              ? "Nombre de candidatures"
+              : "Nombre cumulé",
+          },
+          grid: {
+            color: "rgba(0, 0, 0, 0.06)",
           },
         },
         x: {
@@ -241,41 +347,24 @@ const createChart = async () => {
             display: false,
           },
           ticks: {
-            font: {
-              size: 10,
-            },
-            maxRotation: 45,
-            minRotation: 0,
+            font: { size: 10 },
           },
         },
-      },
-      interaction: {
-        intersect: false,
-        mode: "index",
       },
     },
   });
 };
 
-watch(mode, () => {
-  nextTick(() => {
-    createChart();
-  });
-});
-
 watch(
-  () => props.applications,
-  () => {
-    nextTick(() => {
-      createChart();
-    });
-  },
+  [() => props.applications, mode, displayMode],
+  () => createChart(),
   { deep: true },
 );
 
-onMounted(() => {
-  nextTick(() => {
-    createChart();
-  });
+onMounted(createChart);
+
+onBeforeUnmount(() => {
+  chartInstance?.destroy();
+  chartInstance = null;
 });
 </script>

@@ -2,134 +2,140 @@
   <div class="container mx-auto max-w-5xl px-4 py-8">
     <!-- En-tête -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-      <h1>📑 Mes candidatures</h1>
-      <div class="flex items-end gap-2">
-        <router-link to="/createApplication"
-          class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-          <FontAwesomeIcon :icon="faPlus" />
-          Nouvelle candidature
-        </router-link>
-        <button @click="showExportModal = true"
-          class="inline-flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md">
-          <FontAwesomeIcon :icon="faDownload" />
-          Exporter
-        </button>
-      </div>
+      <h1>📑 Candidatures</h1>
+      <button type="button" @click="handleNew"
+        class="ml-auto inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
+        <font-awesome-icon :icon="faPlus" />
+        Nouvelle candidature
+      </button>
+      <button @click="handleExport"
+        class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white">
+        <font-awesome-icon :icon="faDownload" />
+        Exporter
+      </button>
     </div>
 
-    <!-- Barre de recherche et filtre -->
-    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-      <div class="flex flex-col sm:flex-row gap-3 mb-6">
-        <div class="flex-1 relative">
-          <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input v-model="searchQuery" type="text" placeholder="Rechercher par titre ou entreprise..."
-            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+    <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+      <div class="p-6 pb-4">
+        <div class="relative">
+          <font-awesome-icon :icon="faMagnifyingGlass" class="absolute inset-y-0 left-3 my-auto size-5 text-gray-400" />
+          <input v-model="searchQuery" type="search" placeholder="Rechercher par titre, entreprise, ou ville..."
+            class="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-500" />
         </div>
-        <select v-model="statusFilter"
-          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="">Tous les statuts</option>
-          <option v-for="s in APPLICATION_STATUSES" :key="s.value" :value="s.value">
-            {{ s.label }}
-          </option>
-        </select>
       </div>
 
-      <!-- Résultats -->
-      <div v-if="filteredApplications.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <ApplicationCard v-for="app in filteredApplications" :key="app._id" :application="app"
-          @edit="openStatusModal(app._id as string)" @delete="handleDelete(app._id as string)" />
+      <!-- Status tabs -->
+      <div class="flex overflow-x-auto border-b border-gray-200 px-4">
+        <button v-for="stat in stats" :key="stat.status" type="button" @click="selectedStatus = stat.status"
+          class="flex shrink-0 items-center gap-2 border-b-2 px-2 py-3 text-sm font-medium transition-colors"
+          :class="selectedStatus === stat.status ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'">
+          {{ stat.label }}
+          <span class="rounded-full px-2 py-0.5 text-xs"
+            :class="selectedStatus === stat.status ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'">
+            {{ stat.value }}
+          </span>
+        </button>
       </div>
-      <div v-else class="text-center py-12 text-gray-500">
-        <p class="text-xl">Aucune candidature trouvée</p>
-        <p class="mt-2">Essayez de modifier votre recherche ou filtre.</p>
+
+      <!-- Applications -->
+      <div class="p-6">
+        <div v-if="displayedApplications.length" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ApplicationCard v-for="app in displayedApplications" :key="app._id" :application="app"
+            @edit="handleEdit(app._id as string)"
+            class="transition-all duration-300 hover:scale-[1.02] hover:shadow-lg" />
+        </div>
+
+        <div v-else class="py-12 text-center text-gray-500">
+          Aucun résultat.
+        </div>
       </div>
     </div>
   </div>
-  <StatusUpdateModal :visible="statusModalVisible" :currentStatus="selectedApplication?.status ?? 'pending'"
-    @close="statusModalVisible = false" @confirm="handleStatusUpdate" />
-  <ExportModal v-model:is-open="showExportModal" :applications="applicationsData" @close="showExportModal = false" />
+  <ExportModal v-model:is-open="showExportModal" :applications="applicationsData" :clientID="clientID"
+    @close="showExportModal = false" />
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faDownload, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { APPLICATION_GROUPS } from "../data/applicationGroups.ts";
+import { APPLICATION_STATUSES } from "../data/applicationStatuses.ts";
+import type { Application, ApplicationStatus } from "../interfaces/Application.ts";
 import { useApplicationStore } from "../store/application";
-import { useCompanyStore } from "../store/company";
-import { APPLICATION_STATUSES } from "../data/applicationStatus";
-import ApplicationCard from "../components/Application.vue";
-import StatusUpdateModal from "../components/StatusUpdateModal.vue";
+import { useClientStore } from "../store/client";
+import { getApplicationStatus } from "../utils/getApplicationStatus.ts";
+import ApplicationCard from "../components/ApplicationCard.vue";
 import ExportModal from "../components/ExportModal.vue";
-import type { Application } from "../interfaces/Application"; // Nécessaire pour l'assertion de type
 
 const appStore = useApplicationStore();
-const companyStore = useCompanyStore();
+const clientStore = useClientStore();
+const router = useRouter();
 
-const searchQuery = ref("");
-const statusFilter = ref("");
+const applications = computed(() =>
+  appStore.applications
+);
+const clientID = computed(() =>
+  clientStore.clientID
+);
 
-// ✅ Filtrage réactif
-const filteredApplications = computed(() => {
-  let apps = appStore.applications;
-
-  // Filtre par statut
-  if (statusFilter.value) {
-    apps = apps.filter((a) => a.status === statusFilter.value);
-  }
-
-  // Recherche textuelle (titre ou entreprise)
-  if (searchQuery.value.trim()) {
-    const query = searchQuery.value.trim().toLowerCase();
-    apps = apps.filter((a) => {
-      const titleMatch = a.title.toLowerCase().includes(query);
-      const comp = companyStore.companies.find((c) => c._id === a.companyID);
-      const companyName = comp?.name?.toLowerCase() || "";
-      return titleMatch || companyName.includes(query);
-    });
-  }
-
-  return apps;
+const applicationsByStatus = computed(() => {
+  const groups = Object.fromEntries(
+    Object.keys(APPLICATION_STATUSES).map((status) => [status, [] as Application[]]),
+  ) as Record<ApplicationStatus, Application[]>;
+  applications.value.map((app: Application) => {
+    groups[getApplicationStatus(app)].push(app);
+  });
+  return groups;
 });
 
-// Gestion de la modale d'export
+const searchQuery = ref("");
+const selectedStatus = ref<ApplicationStatus | "">("");
+
+const displayedApplications = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+
+  return (selectedStatus.value === "" ? applications.value : applicationsByStatus.value[selectedStatus.value]).filter((app) => {
+    const matchesSearch =
+      !query ||
+      app.title.toLowerCase().includes(query) ||
+      app.companyName.toLowerCase().includes(query) ||
+      app.companyCity.toLowerCase().includes(query);
+    return matchesSearch;
+  });
+});
+
+const stats = computed(() => [
+  {
+    status: "" as const,
+    label: APPLICATION_GROUPS.total.label,
+    value: applications.value.length,
+  },
+  ...Object.entries(APPLICATION_STATUSES).map(([status, config]) => ({
+    status: status as ApplicationStatus,
+    label: config.label,
+    value: applicationsByStatus.value[status as ApplicationStatus].length,
+  })),
+]);
+
+const handleNew = async () => {
+  appStore.resetApp();
+  router.push("/createApplication");
+};
+
+const handleExport = async () => {
+  showExportModal.value = true;
+};
+
+const handleEdit = async (id: string) => {
+  appStore.selectApp(id);
+  router.push("/createApplication");
+};
+
 const showExportModal = ref(false);
 
-// Données des applications
 const applicationsData = computed(() => {
   return appStore.applications || [];
 });
-
-// ✅ Gestion de la modale de modification de statut
-const statusModalVisible = ref(false);
-const selectedApplicationId = ref<string | null>(null);
-
-const selectedApplication = computed(() => {
-  if (!selectedApplicationId.value) return null;
-  return appStore.getApplicationById(selectedApplicationId.value);
-});
-
-function openStatusModal(id: string) {
-  selectedApplicationId.value = id;
-  statusModalVisible.value = true;
-}
-
-function handleStatusUpdate(newStatus: string, date: string) {
-  if (selectedApplicationId.value) {
-    // Assertion de type nécessaire car updateStatus attend le type littéral
-    appStore.updateStatus(
-      selectedApplicationId.value,
-      newStatus as Application["status"],
-      date,
-    );
-    statusModalVisible.value = false;
-    selectedApplicationId.value = null;
-  }
-}
-const handleDelete = async (id: string) => {
-  appStore.deleteApplication(id);
-};
 </script>

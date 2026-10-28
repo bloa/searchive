@@ -1,229 +1,201 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
     @click.self="closeModal">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-100">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div class="mb-4 flex items-center justify-between">
         <h3 class="text-lg font-semibold text-gray-900">
           Exporter les candidatures
         </h3>
-        <button @click="closeModal" class="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+
+        <button @click="closeModal"
+          class="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700" aria-label="Fermer">
+          <font-awesome-icon :icon="faXmark" />
         </button>
       </div>
 
-      <!-- Description -->
-      <p class="text-sm text-gray-600 mb-6">
-        Choisissez le format d'exportation pour vos candidatures
-      </p>
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <p class="text-sm font-medium text-gray-800">
+          Masquer les noms des petites entreprises
+        </p>
 
-      <!-- Options -->
-      <div class="space-y-3">
+        <button type="button" role="switch" :aria-checked="anonymize" @click="anonymize = !anonymize"
+          class="relative h-6 w-11 shrink-0 rounded-full transition-colors"
+          :class="anonymize ? 'bg-blue-600' : 'bg-gray-300'">
+          <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform"
+            :class="anonymize ? 'translate-x-5' : 'translate-x-0'" />
+        </button>
+      </div>
+
+      <div class="space-y-2">
         <button @click="exportJSON"
-          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-400 group">
+          class="flex w-full items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left transition hover:border-blue-400 hover:bg-blue-50">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              JSON
-            </div>
-            <div class="text-left">
-              <p class="font-medium text-gray-900">Format JSON</p>
-              <p class="text-xs text-gray-500">
-                Structure complète des données
-              </p>
+            <font-awesome-icon :icon="faFileCode" class="text-xl text-blue-600" />
+            <div>
+              <p class="text-sm font-medium text-gray-900">Format JSON</p>
+              <p class="text-xs text-gray-500">Données structurées</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+
+          <font-awesome-icon :icon="faDownload" class="text-sm text-blue-600" />
         </button>
 
         <button @click="exportCSV"
-          class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-green-400 group">
+          class="flex w-full items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left transition hover:border-green-400 hover:bg-green-50">
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              CSV
-            </div>
-            <div class="text-left">
-              <p class="font-medium text-gray-900">Format CSV</p>
-              <p class="text-xs text-gray-500">Tableau compatible Excel</p>
+            <font-awesome-icon :icon="faFileCsv" class="text-xl text-green-600" />
+            <div>
+              <p class="text-sm font-medium text-gray-900">Format CSV</p>
+              <p class="text-xs text-gray-500">Compatible avec Excel</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+
+          <font-awesome-icon :icon="faDownload" class="text-sm text-green-600" />
         </button>
       </div>
 
-      <!-- Footer -->
-      <div class="mt-6 pt-4 border-t border-gray-100">
-        <button @click="closeModal"
-          class="w-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer hover:bg-gray-100">
-          Annuler
-        </button>
-      </div>
+      <button @click="closeModal"
+        class="mt-4 w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+        Annuler
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref, toRaw } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faDownload, faFileCode, faFileCsv, faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { Application } from "../interfaces/Application";
-import { useCompanyStore } from "../store/company";
 
-interface Props {
+const props = defineProps<{
   isOpen: boolean;
   applications: Application[];
-}
+  clientID: string;
+}>();
 
-const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "update:isOpen", value: boolean): void;
   (e: "close"): void;
 }>();
 
-const companyStore = useCompanyStore();
-const companies = companyStore.companies;
+const anonymize = ref(true);
 
 const closeModal = () => {
   emit("update:isOpen", false);
   emit("close");
 };
 
-// Fonction pour récupérer le nom de l'entreprise depuis l'ID
-const getCompanyName = (application: Application): string => {
-  const company = companies.find((c) => c._id === application.companyID);
-  return company?.name || "Entreprise inconnue";
+// Anonymisation
+
+const anonymizeApplication = (app: Application): Application => {
+  const result = structuredClone(toRaw(app));
+
+  if (result.companySize === "1-10") {
+    result.companyName = "REDACTED";
+    result.companyCity = "REDACTED";
+  } else if (result.companySize === "11-50") {
+    result.companyName = "REDACTED";
+  }
+
+  return result;
 };
 
-// Fonction pour récupérer l'objet company complet
-const getCompanyObject = (application: Application) => {
-  return companies.find((c) => c._id === application.companyID) || null;
+const getExportData = () =>
+  props.applications.map((app) =>
+    anonymize.value ? anonymizeApplication(app) : structuredClone(toRaw(app)),
+  );
+
+const getExportFilename = (extension: "json" | "csv") => {
+  const date = new Date().toISOString().slice(0, 10);
+  return `searchive_${props.clientID}_export-${date}.${extension}`;
 };
 
-// Export JSON - Structure complète avec company
+// JSON export
+
 const exportJSON = () => {
-  const exportData = props.applications.map((app) => {
-    // Crée une copie de l'application
-    const { companyID, ...appWithoutCompanyID } = app;
-
-    // Ajoute l'objet company complet
-    return {
-      ...appWithoutCompanyID,
-      company: getCompanyObject(app),
-      // Garde companyID pour référence si besoin
-      companyID: app.companyID,
-    };
-  });
-
-  const json = JSON.stringify(exportData, null, 2);
-  downloadFile(json, "candidatures.json", "application/json");
+  const json = JSON.stringify(getExportData(), null, 2);
+  downloadFile(json, getExportFilename("json"), "application/json");
   closeModal();
 };
 
-// Export CSV - Version simplifiée avec nom de l'entreprise
-const exportCSV = () => {
-  const applications = props.applications;
+// CSV export
 
-  if (applications.length === 0) {
+const exportCSV = () => {
+  if (!props.applications.length) {
     alert("Aucune candidature à exporter");
     return;
   }
 
-  // Définir les colonnes CSV
   const headers = [
-    "ID",
     "Titre",
-    "Entreprise",
-    "Statut",
     "Source",
-    "URL Offre",
+    "Mode",
+    "Entreprise",
+    "Ville",
+    "Taille",
+    "Secteur",
     "Date Candidature",
     "Date Réponse",
-    "Date Entretien RH",
-    "Date Entretien Technique",
+    "Date Entretien",
+    "Date Travail",
+    "Date Technique",
     "Date Acceptation",
-    "Ville",
-    "Code Postal",
-    "Téléphone",
-    "Email",
-    "Statut Historique",
+    "Date Refus",
+    "Date Abandon",
   ];
 
-  // Créer les lignes CSV
-  const rows = applications.map((app) => {
-    const companyName = getCompanyName(app);
-    const statusHistory = app.statusHistory || [];
-
-    return [
-      `"${escapeCSV(app._id || "")}"`,
-      `"${escapeCSV(app.title || "")}"`,
-      `"${escapeCSV(companyName)}"`,
-      `"${escapeCSV(app.status || "")}"`,
-      `"${escapeCSV(app.offerSource || "")}"`,
-      `"${escapeCSV(app.offerUrl || "")}"`,
-      `"${escapeCSV(formatDate(app.date))}"`,
-      `"${escapeCSV(formatDate(app.responseDate))}"`,
-      `"${escapeCSV(formatDate(app.HRInterviewDate))}"`,
-      `"${escapeCSV(formatDate(app.technicalInterviewDate))}"`,
-      `"${escapeCSV(formatDate(app.acceptationDate))}"`,
-      `"${escapeCSV(app.city || "")}"`,
-      `"${escapeCSV(app.postalCode?.toString() || "")}"`,
-      `"${escapeCSV(app.phone?.toString() || "")}"`,
-      `"${escapeCSV(app.email || "")}"`,
-      `"${escapeCSV(formatStatusHistory(statusHistory))}"`,
-    ].join(",");
-  });
+  const rows = getExportData().map((app) =>
+    [
+      app.title,
+      app.offerSource,
+      app.applicationMethod,
+      app.companyName,
+      app.companyCity,
+      app.companySize,
+      app.companySector,
+      formatDate(app.statusDates.sent),
+      formatDate(app.statusDates.screening),
+      formatDate(app.statusDates.interview),
+      formatDate(app.statusDates.assignment),
+      formatDate(app.statusDates.technical),
+      formatDate(app.statusDates.accepted),
+      formatDate(app.statusDates.refused),
+      formatDate(app.statusDates.abandoned),
+    ]
+      .map((value) => `"${escapeCSV(value)}"`)
+      .join(","),
+  );
 
   const csv = [headers.join(","), ...rows].join("\n");
-  downloadFile(csv, "candidatures.csv", "text/csv;charset=utf-8;");
+  downloadFile(csv, getExportFilename("csv"), "text/csv;charset=utf-8;");
   closeModal();
 };
 
-// Helper: Échapper les caractères spéciaux CSV
-const escapeCSV = (value: string): string => {
-  if (!value) return "";
-  return value.replace(/"/g, '""');
-};
+// Helpers
 
-// Helper: Formater la date
+const escapeCSV = (value: unknown): string =>
+  String(value ?? "").replace(/"/g, '""');
+
 const formatDate = (date: string | Date | undefined): string => {
   if (!date) return "";
-  const d = new Date(date);
-  return d.toLocaleDateString("fr-FR", {
+
+  return new Date(date).toLocaleDateString("fr-FR", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
 };
 
-// Helper: Formater l'historique des statuts
-const formatStatusHistory = (history: any[]): string => {
-  if (!history || history.length === 0) return "";
-  return history
-    .map((entry) => `${entry.status} (${formatDate(entry.date)})`)
-    .join(" → ");
-};
-
-// Helper: Télécharger le fichier
 const downloadFile = (content: string, fileName: string, mimeType: string) => {
-  // Ajout BOM pour UTF-8 (spécialement pour Excel)
   const blob = new Blob(["\uFEFF" + content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
+
+  link.href = url;
   link.download = fileName;
-  document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(link.href);
+
+  URL.revokeObjectURL(url);
 };
 </script>
-
-<style scoped>
-/* Animations et styles supplémentaires si nécessaire */
-</style>

@@ -1,52 +1,28 @@
-<!-- components/AppNavbar.vue -->
 <template>
-  <header class="sticky top-0 z-40 bg-white border-b border-gray-200">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <!-- Brand and navigation -->
-      <div class="flex h-16 items-center">
-
-        <!-- Brand: left -->
-        <router-link to="/" class="flex items-center gap-2 text-lg font-bold text-gray-900">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
-            S
-          </span>
-          <span class="hidden sm:inline">Searchive</span>
-        </router-link>
-
-        <!-- Desktop navigation: right -->
-        <div class="hidden md:flex items-center gap-2 ml-auto">
-          <router-link v-for="link in links" :key="link.to" :to="link.to"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors" :class="isActive(link.to)
-              ? 'bg-blue-50 text-blue-700'
-              : 'text-gray-600 hover:bg-gray-100'" :aria-current="isActive(link.to) ? 'page' : undefined">
+  <header class="sticky top-0 z-40 border-b border-gray-200 bg-white">
+    <nav class="relative mx-auto flex max-w-7xl flex-wrap items-center px-4 sm:px-6 lg:px-8">
+      <router-link to="/" class="flex h-16 items-center gap-2 text-lg font-bold text-gray-900">
+        <span class="flex size-9 items-center justify-center rounded-lg bg-blue-600 text-white">
+          S
+        </span>
+        Searchive
+      </router-link>
+      <button type="button" class="ml-auto rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 md:hidden"
+        :aria-expanded="open" aria-controls="mobile-navigation" :aria-label="open ? 'Fermer le menu' : 'Ouvrir le menu'"
+        @click="open = !open">
+        <font-awesome-icon :icon="open ? faXmark : faBars" class="text-xl" />
+      </button>
+      <ul class="ml-auto flex w-full flex-col items-end gap-2 pb-4 md:flex-row md:w-auto md:items-center md:pb-0"
+        :class="{ 'hidden md:flex': !open }">
+        <li v-for="link in links" :key="link.to">
+          <router-link :to="link.to"
+            class="flex w-40 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            :class="isActive(link.to) ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'">
             <font-awesome-icon :icon="link.icon" />
             {{ link.label }}
           </router-link>
-        </div>
-
-        <!-- Mobile menu button: right -->
-        <button type="button" class="ml-auto md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
-          :aria-expanded="open" aria-controls="mobile-navigation" aria-label="Ouvrir le menu" @click="open = !open">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path v-if="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16" />
-            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mobile navigation: right-aligned -->
-      <div v-if="open" id="mobile-navigation" class="flex flex-col items-end gap-1 pb-4 md:hidden">
-        <router-link v-for="link in links" :key="link.to" :to="link.to" class="px-4 py-2 rounded-lg text-sm font-medium"
-          :class="isActive(link.to)
-            ? 'bg-blue-50 text-blue-700'
-            : 'text-gray-600 hover:bg-gray-100'" :aria-current="isActive(link.to) ? 'page' : undefined">
-          <font-awesome-icon :icon="link.icon" />
-          {{ link.label }}
-        </router-link>
-      </div>
-
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
@@ -55,7 +31,7 @@
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faChartLine, faClipboardList, faList } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChartLine, faClipboardList, faList, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const route = useRoute();
 const open = ref(false);
@@ -71,7 +47,6 @@ const isActive = (to: string) => {
   return route.path === to || route.path.startsWith(`${to}/`);
 };
 
-// Referme le menu mobile après une navigation.
 watch(
   () => route.path,
   () => {

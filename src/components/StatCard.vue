@@ -9,7 +9,6 @@
 
     <div class="flex items-center gap-3 mt-3">
       <font-awesome-icon :icon="icon" :style="{ color }" class="text-2xl" />
-
       <p class="text-2xl font-bold text-gray-900 tabular-nums">
         {{ value }}
       </p>

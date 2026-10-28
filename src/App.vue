@@ -1,8 +1,8 @@
 <template>
-  <div id="app" class="min-h-screen bg-blue-50">
-    <AppNavbar v-if="!hideNav" />
+  <app-navbar v-if="!hideNav" />
+  <main>
     <router-view />
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
