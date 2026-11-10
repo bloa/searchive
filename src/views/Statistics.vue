@@ -10,13 +10,13 @@
     </div>
 
     <div class="mt-8 bg-white p-4 rounded-xl shadow">
-      <h2 class="text-lg font-semibold mb-4">Diagramme de Gantt</h2>
-      <GanttChart :applications="applications" />
+      <h2 class="text-lg font-semibold mb-4">Diagramme de Sankey</h2>
+      <SankeyChart :applications="applications" />
     </div>
 
     <div class="mt-8 bg-white p-4 rounded-xl shadow">
-      <h2 class="text-lg font-semibold mb-4">Diagramme de Sankey</h2>
-      <SankeyChart :applications="applications" />
+      <h2 class="text-lg font-semibold mb-4">Diagramme de Gantt</h2>
+      <GanttChart :applications="applications" />
     </div>
   </div>
 </template>

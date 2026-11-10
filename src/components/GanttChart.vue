@@ -2,7 +2,7 @@
   <div v-if="props.applications.length == 0" class="flex items-center justify-center text-sm text-gray-400">
     Aucune donnée à afficher.
   </div>
-  <div v-else class="flex h-80 w-full flex-col">
+  <div v-else class="flex max-h-160 w-full flex-col">
     <!-- Sorting controls -->
     <div class="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2">
       <span class="text-sm text-gray-600">Trier par</span>
