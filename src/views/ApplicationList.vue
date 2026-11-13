@@ -38,9 +38,9 @@
       </div>
 
       <!-- Applications -->
-      <div class="p-6">
-        <div v-if="displayedApplications.length" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <ApplicationCard v-for="app in displayedApplications" :key="app._id" :application="app"
+      <div class="px-4 pb-6">
+        <div v-if="displayedApplications.length" class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <ApplicationListItem v-for="app in displayedApplications" :key="app._id" :application="app"
             @edit="handleEdit(app._id as string)"
             class="transition-all duration-300 hover:scale-[1.02] hover:shadow-lg" />
         </div>
@@ -66,7 +66,7 @@ import type { Application, ApplicationStatus } from "../interfaces/Application.t
 import { useApplicationStore } from "../store/application";
 import { useClientStore } from "../store/client";
 import { getApplicationStatus } from "../utils/getApplicationStatus.ts";
-import ApplicationCard from "../components/ApplicationCard.vue";
+import ApplicationListItem from "../components/ApplicationListItem.vue";
 import ExportModal from "../components/ExportModal.vue";
 
 const appStore = useApplicationStore();

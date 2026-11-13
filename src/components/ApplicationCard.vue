@@ -2,7 +2,6 @@
   <div
     class="group w-72 overflow-hidden rounded-xl border border-gray-100 bg-white transition-all duration-200 hover:border-blue-200 hover:shadow-md"
     @click="$emit('click', application._id as string)">
-    <!-- Status bar -->
     <div class="h-1" :style="{ backgroundColor: status.color }"></div>
 
     <div class="p-4">
@@ -69,7 +68,6 @@ defineEmits<{
 
 const status = computed(() => APPLICATION_STATUSES[getApplicationStatus(props.application)]);
 
-// Date of application
 const formattedDate = computed(() => {
   const latestDate = Object.values(props.application.statusDates)
     .filter((date): date is string => !!date)
