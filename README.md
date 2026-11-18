@@ -26,9 +26,10 @@ Les données sont stockées localement dans le navigateur via localStorage ; auc
 - **Vue Router** pour la navigation
 - **LocalStorage** pour la persistance des données
 - **Librairies externes** :
-  - `papaparse` et `file-saver` (exports CSV/JSON)
-  - `chart.js` et `vue-chartjs` (graphiques)
-  - `uuid` (génération d'identifiants uniques)
+  - Tailwind CSS 4 pour le styling
+  - Font Awesome pour les icônes
+  - `chart.js` et `chartjs-chart-sankey` pour les graphiques
+  - `uuid` pour ls génération d'identifiants uniques
 
 ## Utilisation locale
 
