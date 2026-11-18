@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto max-w-5xl px-4 py-8">
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-8">
       <h1>📈 Statistiques</h1>
     </div>
 

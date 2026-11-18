@@ -1,9 +1,9 @@
 <template>
   <div class="container mx-auto max-w-5xl px-4 py-8">
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-8">
       <h1>📋 Dashboard</h1>
       <button type="button" @click="handleNew"
-        class="ml-auto inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
+        class="ml-auto inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
         <font-awesome-icon :icon="faPlus" />
         Nouvelle candidature
       </button>

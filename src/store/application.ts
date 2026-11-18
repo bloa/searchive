@@ -44,6 +44,11 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     storage.setItem(storageKey, applications.value);
   }
 
+  function saveApps(apps: Application[]) {
+    applications.value = apps;
+    storage.setItem(storageKey, apps);
+  }
+
   function defaultApplication(): Application {
     return {
       _id: undefined,
@@ -76,5 +81,6 @@ export const useApplicationStore = defineStore("applicationStore", () => {
     selectApp,
     saveApp,
     deleteApp,
+    saveApps,
   };
 });

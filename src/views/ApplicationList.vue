@@ -1,12 +1,17 @@
 <template>
   <div class="container mx-auto max-w-5xl px-4 py-8">
     <!-- En-tête -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-8">
       <h1>📑 Candidatures</h1>
       <button type="button" @click="handleNew"
         class="ml-auto inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
         <font-awesome-icon :icon="faPlus" />
         Nouvelle candidature
+      </button>
+      <button @click="handleImport"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+        <font-awesome-icon :icon="faFileImport" />
+        Importer
       </button>
       <button @click="handleExport"
         class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white">
@@ -51,6 +56,7 @@
       </div>
     </div>
   </div>
+  <ImportModal v-model:is-open="showImportModal" @close="showImportModal = false" @import="finalizeImport" />
   <ExportModal v-model:is-open="showExportModal" :applications="applicationsData" :clientID="clientID"
     @close="showExportModal = false" />
 </template>
@@ -59,7 +65,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faDownload, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFileImport, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { APPLICATION_GROUPS } from "../data/applicationGroups.ts";
 import { APPLICATION_STATUSES } from "../data/applicationStatuses.ts";
 import type { Application, ApplicationStatus } from "../interfaces/Application.ts";
@@ -68,6 +74,7 @@ import { useClientStore } from "../store/client";
 import { getApplicationStatus } from "../utils/getApplicationStatus.ts";
 import ApplicationListItem from "../components/ApplicationListItem.vue";
 import ExportModal from "../components/ExportModal.vue";
+import ImportModal from "../components/ImportModal.vue";
 
 const appStore = useApplicationStore();
 const clientStore = useClientStore();
@@ -124,6 +131,15 @@ const handleNew = async () => {
   router.push("/createApplication");
 };
 
+const handleImport = async () => {
+  showImportModal.value = true;
+};
+
+const finalizeImport = async (importedApplications: Application[]) => {
+  await appStore.saveApps(importedApplications);
+  showImportModal.value = false;
+};
+
 const handleExport = async () => {
   showExportModal.value = true;
 };
@@ -133,6 +149,7 @@ const handleEdit = async (id: string) => {
   router.push("/createApplication");
 };
 
+const showImportModal = ref(false);
 const showExportModal = ref(false);
 
 const applicationsData = computed(() => {
